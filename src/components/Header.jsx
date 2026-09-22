@@ -19,7 +19,8 @@ import {
   Moon,
   Sparkles,
   Layers,
-  HelpCircle
+  HelpCircle,
+  UploadCloud
 } from 'lucide-react';
 import { exportMilestonesToCSV, exportToJSON } from '../utils/exportUtils';
 
@@ -50,7 +51,8 @@ export default function Header() {
     autoFixDependencies,
     resetDemoData,
     startTour,
-    openAICopilot
+    openAICopilot,
+    openIntegrationHub
   } = useProject();
 
   const navItems = [
@@ -62,6 +64,7 @@ export default function Header() {
     { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb },
     { id: 'resource', label: 'Team Capacity', icon: Users },
     { id: 'analytics', label: 'Executive Analytics', icon: BarChart3 },
+    { id: 'integrations', label: 'Universal Integration', icon: UploadCloud },
   ];
 
   const handleCreateMilestone = () => {
@@ -164,12 +167,23 @@ export default function Header() {
             + Idea
           </button>
 
+          {/* Universal Integration Hub */}
+          <button
+            id="btn-integration-hub"
+            onClick={openIntegrationHub}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-all shadow-xs"
+            title="Universal Integration Hub (Import/Export Excel, CSV, Jira, MS Project)"
+          >
+            <UploadCloud className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Import / Integration Hub</span>
+          </button>
+
           {/* Export CSV */}
           <div className="relative group">
             <button
               onClick={() => exportMilestonesToCSV(milestones)}
               className="p-2 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-900 transition-all"
-              title="Export CSV"
+              title="Quick Export CSV"
             >
               <Download className="w-4 h-4" />
             </button>

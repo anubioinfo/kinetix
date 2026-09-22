@@ -9,6 +9,7 @@ import KanbanView from './views/KanbanView';
 import IdeasView from './views/IdeasView';
 import ResourceView from './views/ResourceView';
 import AnalyticsView from './views/AnalyticsView';
+import IntegrationHubView from './views/IntegrationHubView';
 
 import MilestoneModal from './components/MilestoneModal';
 import GoalModal from './components/GoalModal';
@@ -17,6 +18,7 @@ import DetailDrawer from './components/Drawer/DetailDrawer';
 import OnboardingTour from './components/OnboardingTour';
 import DeveloperProfileModal from './components/DeveloperProfileModal';
 import AICopilotDrawer from './components/AICopilotDrawer';
+import IntegrationHubModal from './components/IntegrationHubModal';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -31,12 +33,13 @@ function MainContent() {
       {activeView === 'ideas' && <IdeasView />}
       {activeView === 'resource' && <ResourceView />}
       {activeView === 'analytics' && <AnalyticsView />}
+      {activeView === 'integrations' && <IntegrationHubView />}
     </main>
   );
 }
 
 function AppContent() {
-  const { isAICopilotOpen, closeAICopilot } = useProject();
+  const { isAICopilotOpen, closeAICopilot, isIntegrationModalOpen, closeIntegrationHub } = useProject();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
@@ -48,6 +51,7 @@ function AppContent() {
       <DetailDrawer />
       <DeveloperProfileModal />
       <AICopilotDrawer isOpen={isAICopilotOpen} onClose={closeAICopilot} />
+      <IntegrationHubModal isOpen={isIntegrationModalOpen} onClose={closeIntegrationHub} />
       <OnboardingTour />
     </div>
   );
