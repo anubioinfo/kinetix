@@ -47,6 +47,12 @@ export function ProjectProvider({ children }) {
   const [selectedDeveloperName, setSelectedDeveloperName] = useState(null);
   const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
 
+  // Kinetix IQ Drawer State
+  const [isAICopilotOpen, setIsAICopilotOpen] = useState(false);
+
+  const openAICopilot = () => setIsAICopilotOpen(true);
+  const closeAICopilot = () => setIsAICopilotOpen(false);
+
   const openDeveloperProfile = (name) => {
     if (!name) return;
     setSelectedDeveloperName(name);
@@ -262,6 +268,8 @@ export function ProjectProvider({ children }) {
       selectedDeveloperName, setSelectedDeveloperName,
       isDeveloperModalOpen, setIsDeveloperModalOpen,
       openDeveloperProfile, closeDeveloperProfile,
+      isAICopilotOpen, setIsAICopilotOpen,
+      openAICopilot, closeAICopilot,
       darkMode, setDarkMode,
       ganttZoom, setGanttZoom,
       isTourActive, currentTourStep, startTour, endTour, nextTourStep, prevTourStep,

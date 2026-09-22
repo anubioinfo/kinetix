@@ -63,7 +63,7 @@ export default function AICopilotDrawer({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: "Hello! I am your Kinetix AI Copilot. Ask me anything about your project roadmap, team capacity, milestones, or RICE scores!",
+      text: "Hello! I am Kinetix IQ, your smart agile assistant. Ask me anything about your project roadmap, team capacity, milestones, or RICE scores!",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -234,7 +234,7 @@ export default function AICopilotDrawer({ isOpen, onClose }) {
             </div>
             <div>
               <h2 className="text-sm font-extrabold flex items-center gap-1.5">
-                <span>Kinetix AI Copilot</span>
+                <span>Kinetix IQ</span>
                 <span className="text-[9px] font-mono bg-indigo-500/30 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-400/30">v2.4 LLM</span>
               </h2>
               <p className="text-[11px] text-indigo-200 font-medium">Smart Roadmap Assistant & Milestone Generator</p>
@@ -363,7 +363,7 @@ export default function AICopilotDrawer({ isOpen, onClose }) {
                 type="text"
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Ask Kinetix AI (e.g. 'Show Ram's tasks')..."
+                placeholder="Ask Kinetix IQ (e.g. 'Show Ram's tasks')..."
                 className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-hidden focus:border-indigo-600 font-medium"
               />
               <button

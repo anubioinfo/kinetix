@@ -49,7 +49,8 @@ export default function Header() {
     dependencyConflicts,
     autoFixDependencies,
     resetDemoData,
-    startTour
+    startTour,
+    openAICopilot
   } = useProject();
 
   const navItems = [
@@ -124,6 +125,17 @@ export default function Header() {
               Auto-Reschedule ({dependencyConflicts.length} Conflicts)
             </button>
           )}
+
+          {/* Kinetix IQ AI Button */}
+          <button
+            id="btn-kinetix-iq"
+            onClick={openAICopilot}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-bold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white hover:opacity-95 shadow-md shadow-purple-200 transition-all transform active:scale-95 border border-purple-400/30"
+            title="Launch Kinetix IQ Assistant & Milestone Generator"
+          >
+            <Sparkles className="w-4 h-4 text-purple-200 animate-pulse" />
+            <span>Kinetix IQ</span>
+          </button>
 
           {/* New Milestone Button */}
           <button
