@@ -1,29 +1,43 @@
 # Kinetix Roadmap — High-Velocity Agile Milestone Execution Engine
 
-> **Enterprise-grade product strategy, interactive roadmap Gantt visualization, RICE scoring engine, and agile execution platform built for high-velocity teams.**
+> **Enterprise product strategy, interactive Gantt roadmap visualization, RICE prioritization engine, and agile execution platform built for high-velocity teams.**
+
+---
+
+## 🚀 Active Project: KeepNote Ecosystem (Google Keep Alternative)
+
+Kinetix Roadmap is pre-configured with a real-world software engineering project: **KeepNote Ecosystem** — a cross-platform note-taking engine with real-time cloud synchronization, push notifications, voice note transcription, and workspace note sharing.
+
+### 👥 Team Members & Roles
+- **Anurag**: Engineering Manager & Product Lead (Roadmap Oversight)
+- **Jitendra**: Senior Python Developer (FastAPI Architecture, Backend REST & DB Schema)
+- **Nitin**: Python Developer (Firebase FCM & APNs Push Notification Engine)
+- **Ram**: Senior Frontend Developer (React Web Dashboard & TipTap Rich-Text Editor)
+- **Akshay**: Frontend Developer (React Native iOS & Android Mobile Application)
+- **Dinesh**: Lead QA Engineer (PyTest API Suite, Cypress Web E2E & Load Testing)
+- **Shyam**: DevOps Engineer (Docker Containers, AWS ECS Infrastructure & GitHub Actions CI/CD)
 
 ---
 
 ## 🌟 Key Features Overview
 
-- 📅 **Interactive Drag-and-Drop Gantt Roadmap**: Schedule milestones visually by dragging milestone bars across the timeline and draw dependency arrows interactively.
-- 🎯 **2x2 Priority Matrix & Kinetix RICE Scorecard**: Evaluate feature effort vs. impact in a 4-quadrant dynamic grid or calculate RICE scores (*Reach × Impact × Confidence ÷ Effort*) in a structured table.
-- 📋 **Interactive Drag-and-Drop Kanban Board**: Move agile workflow tasks smoothly across *Backlog*, *In Progress*, *Review*, and *Completed* columns with live progress updates.
-- 🎯 **Strategic Goal Hub**: Map product milestones directly to enterprise strategic objectives and monitor ROI & metric achievement.
-- 💡 **Ideas Portal with 1-Click Milestone Promotion**: Capture customer feedback and promote validated ideas into scheduled roadmap milestones with a single click.
-- 👥 **Resource Workload & Capacity Planner**: View team allocation across engineers and designers to prevent burnout and resource bottlenecks.
-- 🎓 **Guided Interactive Onboarding Tour**: Step-by-step unblurred target spotlight tour that walks new users through every core feature.
-- 📤 **CSV & JSON Data Import/Export**: Backup or migrate product roadmaps effortlessly with complete data export and import support.
-- 🎨 **Soft Pastel Light Aesthetic**: Designed with modern typography, smooth pastel badges, glassmorphism panels, and intuitive micro-interactions.
+- 📅 **Interactive Drag-and-Drop Gantt Roadmap**: Schedule milestones visually by dragging timeline bars left or right, and connect prerequisite milestone dependency arrows interactively.
+- 🎯 **2x2 Priority Matrix & Kinetix RICE Scorecard**: Evaluate feature effort vs. impact in 4 dynamic quadrants or stack rank features using the RICE formula (*Reach × Impact × Confidence ÷ Effort*).
+- 📋 **Interactive Drag-and-Drop Kanban Board**: Move agile workflow tasks across *Not Started*, *In Progress*, *Under Review*, and *Completed* columns with live completion progress updates.
+- 🎯 **Strategic Goal Hub**: Map engineering milestones to strategic business objectives (*Real-time sync, Mobile launch, Push reminders, Workspace sharing*).
+- 💡 **Ideas Portal with 1-Click Promotion**: Capture customer feature requests and convert approved ideas into active roadmap milestones with a single click.
+- 👥 **Resource Workload & Capacity Planner**: Monitor team allocation across Anurag, Jitendra, Nitin, Ram, Akshay, Dinesh, and Shyam to prevent burnout.
+- 🎓 **Guided Interactive Onboarding Tour**: Unblurred target spotlight tour that guides users through every module.
+- 📤 **CSV & JSON Data Import/Export**: Backup or migrate product roadmaps with 1-click JSON exports (`kinetix_roadmap_export.json`) and CSV milestone exports (`kinetix_milestones.csv`).
 
 ---
 
 ## 🖼️ Kinetix Roadmap Feature Screenshots
 
-### 1. Interactive Gantt Roadmap & Timeline
+### 1. Interactive Gantt Roadmap & Timeline (~60% Progress Completed)
 ![Kinetix Gantt Roadmap](./docs/images/gantt_roadmap.png)
 
-### 2. 2x2 Priority Matrix & Kinetix RICE Scorecard
+### 2. 2x2 Priority Matrix (Effort vs. Impact Quadrants)
 ![Kinetix Priority Matrix](./docs/images/priority_matrix.png)
 
 ### 3. Kinetix RICE Prioritization Scorecard
@@ -35,11 +49,11 @@
 ### 5. Dependency Graph Network
 ![Kinetix Dependency Graph](./docs/images/dependency_graph.png)
 
-### 6. Strategic Goals Hub
+### 6. Strategic Goals Hub & Metrics
 ![Kinetix Strategy Hub](./docs/images/strategy_hub.png)
 
-### 7. Ideas Portal & 1-Click Promotion
-![Kinetix Ideas Portal](./docs/images/ideas_portal.png)
+### 7. Resource Capacity & Workload Heatmap
+![Resource Workload](./docs/images/workload.png)
 
 > **For complete visual guides and step-by-step instructions for all screens, see the [📖 Complete Kinetix User Manual](./MANUAL.md).**
 
@@ -104,11 +118,11 @@ node -v
 ```
 kinetix/
 ├── docs/
-│   └── images/                # Fresh Kinetix screenshots for README & Manual
+│   └── images/                # High-resolution screenshots of KeepNote project
 ├── src/
 │   ├── components/            # UI components (Header, OnboardingTour, DetailDrawer, etc.)
 │   ├── context/               # Global state (ProjectContext for roadmap & board state)
-│   ├── data/                  # Initial mock dataset for milestones, goals, & ideas
+│   ├── data/                  # KeepNote mock data (Milestones, Team, Goals, Ideas)
 │   ├── utils/                 # Export/Import CSV & JSON helpers
 │   ├── views/                 # Core view modules:
 │   │   ├── RoadmapGanttView.jsx    # Drag-and-drop Gantt timeline & line drawing

@@ -4,7 +4,7 @@ import { detectDependencyConflicts, autoRescheduleDependencies } from '../utils/
 
 const ProjectContext = createContext();
 
-const STORAGE_KEY = 'kinetix_pm_app_v1';
+const STORAGE_KEY = 'kinetix_note_app_v3';
 
 export function ProjectProvider({ children }) {
   // Load initial state from LocalStorage if available
