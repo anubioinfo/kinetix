@@ -1,4 +1,4 @@
-# Kinetix — High-Velocity Agile Milestone Execution Engine
+# Kinetix Roadmap — High-Velocity Agile Milestone Execution Engine
 
 > **Enterprise-grade product strategy, interactive roadmap Gantt visualization, RICE scoring engine, and agile execution platform built for high-velocity teams.**
 
@@ -7,7 +7,7 @@
 ## 🌟 Key Features Overview
 
 - 📅 **Interactive Drag-and-Drop Gantt Roadmap**: Schedule milestones visually by dragging milestone bars across the timeline and draw dependency arrows interactively.
-- 🎯 **2x2 Priority Matrix & RICE Scorecard**: Evaluate feature effort vs. impact in a 4-quadrant dynamic grid or calculate RICE scores (*Reach × Impact × Confidence ÷ Effort*) in a structured table.
+- 🎯 **2x2 Priority Matrix & Kinetix RICE Scorecard**: Evaluate feature effort vs. impact in a 4-quadrant dynamic grid or calculate RICE scores (*Reach × Impact × Confidence ÷ Effort*) in a structured table.
 - 📋 **Interactive Drag-and-Drop Kanban Board**: Move agile workflow tasks smoothly across *Backlog*, *In Progress*, *Review*, and *Completed* columns with live progress updates.
 - 🎯 **Strategic Goal Hub**: Map product milestones directly to enterprise strategic objectives and monitor ROI & metric achievement.
 - 💡 **Ideas Portal with 1-Click Milestone Promotion**: Capture customer feedback and promote validated ideas into scheduled roadmap milestones with a single click.
@@ -18,21 +18,30 @@
 
 ---
 
-## 🖼️ Feature Screenshots
+## 🖼️ Kinetix Roadmap Feature Screenshots
 
 ### 1. Interactive Gantt Roadmap & Timeline
-![Interactive Gantt Roadmap](./docs/images/gantt_roadmap.png)
+![Kinetix Gantt Roadmap](./docs/images/gantt_roadmap.png)
 
-### 2. 2x2 Priority Matrix & RICE Scorecard
-![2x2 Priority Matrix](./docs/images/priority_matrix.png)
+### 2. 2x2 Priority Matrix & Kinetix RICE Scorecard
+![Kinetix Priority Matrix](./docs/images/priority_matrix.png)
 
-### 3. Interactive Drag & Drop Kanban Workflow
-![Drag & Drop Kanban Board](./docs/images/kanban_board.png)
+### 3. Kinetix RICE Prioritization Scorecard
+![Kinetix RICE Scorecard](./docs/images/rice_scorecard.png)
 
-### 4. Interactive Guided Onboarding Tour
-![Guided Onboarding Tour](./docs/images/onboarding_tour.png)
+### 4. Interactive Drag & Drop Kanban Workflow
+![Kinetix Kanban Board](./docs/images/kanban_board.png)
 
-> **For complete visual guides and step-by-step instructions for all screens, see the [📖 Complete User Manual](./MANUAL.md).**
+### 5. Dependency Graph Network
+![Kinetix Dependency Graph](./docs/images/dependency_graph.png)
+
+### 6. Strategic Goals Hub
+![Kinetix Strategy Hub](./docs/images/strategy_hub.png)
+
+### 7. Ideas Portal & 1-Click Promotion
+![Kinetix Ideas Portal](./docs/images/ideas_portal.png)
+
+> **For complete visual guides and step-by-step instructions for all screens, see the [📖 Complete Kinetix User Manual](./MANUAL.md).**
 
 ---
 
@@ -95,7 +104,7 @@ node -v
 ```
 kinetix/
 ├── docs/
-│   └── images/                # High-resolution screenshots for README & Manual
+│   └── images/                # Fresh Kinetix screenshots for README & Manual
 ├── src/
 │   ├── components/            # UI components (Header, OnboardingTour, DetailDrawer, etc.)
 │   ├── context/               # Global state (ProjectContext for roadmap & board state)
@@ -103,7 +112,7 @@ kinetix/
 │   ├── utils/                 # Export/Import CSV & JSON helpers
 │   ├── views/                 # Core view modules:
 │   │   ├── RoadmapGanttView.jsx    # Drag-and-drop Gantt timeline & line drawing
-│   │   ├── PriorityMatrixView.jsx  # 2x2 Matrix & RICE Scorecard
+│   │   ├── PriorityMatrixView.jsx  # 2x2 Matrix & Kinetix RICE Scorecard
 │   │   ├── DependencyGraphView.jsx # SVG Dependency node graph
 │   │   ├── StrategyHubView.jsx     # Goals & Strategic alignment matrix
 │   │   ├── IdeasPortalView.jsx     # Ideas capturing & 1-click promotion

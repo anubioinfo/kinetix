@@ -1,13 +1,13 @@
-# 📘 Kinetix User Manual & Feature Guide
+# 📘 Kinetix Roadmap User Manual & Feature Guide
 
-Welcome to the **Kinetix** User Manual! This guide provides comprehensive, step-by-step instructions on how to use every feature in Kinetix, complete with visual screenshot references and workflow tips.
+Welcome to the **Kinetix Roadmap** User Manual! This guide provides comprehensive, step-by-step instructions on how to use every feature in Kinetix Roadmap, complete with visual screenshot references and workflow tips.
 
 ---
 
 ## 📑 Table of Contents
 1. [Getting Started](#1-getting-started)
 2. [Roadmap & Interactive Gantt Timeline](#2-roadmap--interactive-gantt-timeline)
-3. [2x2 Priority Matrix & RICE Scorecard](#3-2x2-priority-matrix--rice-scorecard)
+3. [2x2 Priority Matrix & Kinetix RICE Scorecard](#3-2x2-priority-matrix--kinetix-rice-scorecard)
 4. [Drag-and-Drop Kanban Board](#4-drag-and-drop-kanban-board)
 5. [Dependency Graph Visualizer](#5-dependency-graph-visualizer)
 6. [Strategic Goals Hub](#6-strategic-goals-hub)
@@ -20,20 +20,20 @@ Welcome to the **Kinetix** User Manual! This guide provides comprehensive, step-
 
 ## 1. Getting Started
 
-When you launch Kinetix (`npm run dev` at `http://localhost:5173`), you are greeted with the main application header featuring:
-- **Navigation Tabs**: Seamlessly switch between Roadmap, Priority Matrix, Dependency Graph, Goals Hub, Ideas Portal, Workload, and Kanban Board.
+When you launch Kinetix Roadmap (`npm run dev` at `http://localhost:5173`), you are greeted with the main application header featuring:
+- **Navigation Tabs**: Seamlessly switch between Kinetix Roadmap, Priority Matrix, Dependency Graph, Goals Hub, Ideas Portal, Workload, and Kanban Board.
 - **Data Action Buttons**: Export JSON, Export CSV, and Import Data.
 - **Help & Tour Button**: Launches the interactive step-by-step guided onboarding tour.
 
-![App Overview](./docs/images/gantt_roadmap.png)
+![Kinetix Roadmap Overview](./docs/images/gantt_roadmap.png)
 
 ---
 
 ## 2. Roadmap & Interactive Gantt Timeline
 
-The **Roadmap & Gantt** module is the core execution engine of Kinetix. It provides a visual timeline of all product milestones grouped by strategic goals.
+The **Kinetix Roadmap & Gantt** module is the core execution engine. It provides a visual timeline of all product milestones grouped by strategic goals.
 
-![Gantt Roadmap Screen](./docs/images/gantt_roadmap.png)
+![Kinetix Gantt Roadmap Screen](./docs/images/gantt_roadmap.png)
 
 ### Core Interactions:
 
@@ -53,7 +53,7 @@ The **Roadmap & Gantt** module is the core execution engine of Kinetix. It provi
 
 ---
 
-## 3. 2x2 Priority Matrix & RICE Scorecard
+## 3. 2x2 Priority Matrix & Kinetix RICE Scorecard
 
 Prioritize your product roadmap objectively using two industry-standard prioritization frameworks.
 
@@ -66,12 +66,12 @@ Switch to the **2x2 Matrix** tab to see your features automatically plotted into
 - **🌱 Fill-ins (Low Impact, Low Effort)**: Low-hanging fruit for downtime.
 - **⚠️ Thankless Tasks (Low Impact, High Effort)**: Candidates for deprioritization or scope reduction.
 
-### B. RICE Prioritization Scorecard
-Click the **RICE Scorecard** tab to switch to a structured table ranking features by their calculated RICE score:
+### B. Kinetix RICE Prioritization Scorecard
+Click the **Kinetix RICE Scorecard** tab to switch to a structured table ranking features by their calculated RICE score:
 
 $$\text{RICE Score} = \frac{\text{Reach} \times \text{Impact} \times \text{Confidence}}{\text{Effort}}$$
 
-![RICE Scorecard](./docs/images/rice_scorecard.png)
+![Kinetix RICE Scorecard](./docs/images/rice_scorecard.png)
 
 ---
 
@@ -79,7 +79,7 @@ $$\text{RICE Score} = \frac{\text{Reach} \times \text{Impact} \times \text{Confi
 
 Track daily task execution with an agile **Kanban Board** supporting intuitive drag-and-drop column transitions.
 
-![Kanban Board Screen](./docs/images/kanban_board.png)
+![Kinetix Kanban Board Screen](./docs/images/kanban_board.png)
 
 ### How to Move Tasks:
 1. Click and hold any task card in the **Backlog**, **In Progress**, **Review**, or **Completed** columns.
@@ -92,7 +92,7 @@ Track daily task execution with an agile **Kanban Board** supporting intuitive d
 
 Understand cross-team dependencies and critical paths with an SVG-rendered node network.
 
-![Dependency Graph](./docs/images/dependency_graph.png)
+![Kinetix Dependency Graph](./docs/images/dependency_graph.png)
 
 - Nodes represent milestones, colored by their health (*Green = On Track, Orange = At Risk, Red = Delayed*).
 - Arrows indicate prerequisite relationships to highlight risk propagation across teams.
@@ -103,7 +103,7 @@ Understand cross-team dependencies and critical paths with an SVG-rendered node 
 
 Ensure every engineering initiative aligns with corporate objectives.
 
-![Strategy Hub](./docs/images/strategy_hub.png)
+![Kinetix Strategy Hub](./docs/images/strategy_hub.png)
 
 - **Goal Metric Cards**: Track key results (*e.g., Enterprise ARR, User Retention, System Uptime*).
 - **Milestone Alignment Matrix**: View which milestones support each strategic goal and track overall goal progress percentages.
@@ -114,12 +114,12 @@ Ensure every engineering initiative aligns with corporate objectives.
 
 Gather customer feedback and promote validated feature requests straight to your roadmap.
 
-![Ideas Portal](./docs/images/ideas_portal.png)
+![Kinetix Ideas Portal](./docs/images/ideas_portal.png)
 
 ### 1-Click Milestone Promotion:
 1. Browse submitted ideas in the portal.
 2. Click the **Upvote** button to increment community interest.
-3. When an idea is validated, click **Promote to Milestone** — Kinetix automatically converts the idea into an active roadmap milestone!
+3. When an idea is validated, click **Promote to Milestone** — Kinetix Roadmap automatically converts the idea into an active roadmap milestone!
 
 ---
 
@@ -134,9 +134,9 @@ Prevent team burnout by monitoring resource allocation across team members.
 
 ## 9. Guided Interactive Onboarding Tour
 
-Kinetix includes a step-by-step interactive walk-through tour with an unblurred target spotlight ring.
+Kinetix Roadmap includes a step-by-step interactive walk-through tour with an unblurred target spotlight ring.
 
-![Onboarding Tour](./docs/images/onboarding_tour.png)
+![Kinetix Onboarding Tour](./docs/images/onboarding_tour.png)
 
 ### How to Use the Tour:
 1. Click **Help & Tour** in the top navigation bar at any time.
@@ -155,4 +155,4 @@ Keep your roadmap safe with built-in export and import features located in the h
 
 ---
 
-*Thank you for using **Kinetix**! For updates and contributions, visit the repository at [github.com/anubioinfo/kinetix](https://github.com/anubioinfo/kinetix).*
+*Thank you for using **Kinetix Roadmap**! For updates and contributions, visit the repository at [github.com/anubioinfo/kinetix](https://github.com/anubioinfo/kinetix).*
