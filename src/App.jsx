@@ -16,6 +16,7 @@ import IdeaModal from './components/IdeaModal';
 import DetailDrawer from './components/Drawer/DetailDrawer';
 import OnboardingTour from './components/OnboardingTour';
 import DeveloperProfileModal from './components/DeveloperProfileModal';
+import AICopilotDrawer from './components/AICopilotDrawer';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -34,19 +35,28 @@ function MainContent() {
   );
 }
 
+function AppContent() {
+  const { isAICopilotOpen, closeAICopilot } = useProject();
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+      <Header />
+      <MainContent />
+      <MilestoneModal />
+      <GoalModal />
+      <IdeaModal />
+      <DetailDrawer />
+      <DeveloperProfileModal />
+      <AICopilotDrawer isOpen={isAICopilotOpen} onClose={closeAICopilot} />
+      <OnboardingTour />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <ProjectProvider>
-      <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-        <Header />
-        <MainContent />
-        <MilestoneModal />
-        <GoalModal />
-        <IdeaModal />
-        <DetailDrawer />
-        <DeveloperProfileModal />
-        <OnboardingTour />
-      </div>
+      <AppContent />
     </ProjectProvider>
   );
 }
