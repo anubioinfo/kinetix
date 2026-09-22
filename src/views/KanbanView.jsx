@@ -4,7 +4,7 @@ import { Kanban, Move, CheckCircle2 } from 'lucide-react';
 import { formatPrettyDate } from '../utils/dateUtils';
 
 export default function KanbanView() {
-  const { filteredMilestones, updateMilestone, setSelectedMilestoneId } = useProject();
+  const { filteredMilestones, updateMilestone, setSelectedMilestoneId, openDeveloperProfile } = useProject();
 
   const [draggedMsId, setDraggedMsId] = useState(null);
   const [activeOverColumnId, setActiveOverColumnId] = useState(null);
@@ -164,7 +164,17 @@ export default function KanbanView() {
                       {/* Footer */}
                       <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100 font-mono">
                         <span>Due: {formatPrettyDate(ms.dueDate)}</span>
-                        <span className="truncate max-w-[90px] font-sans font-bold text-slate-700">{ms.owner}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDeveloperProfile(ms.owner);
+                          }}
+                          className="font-sans font-bold text-indigo-700 hover:text-indigo-900 hover:underline cursor-pointer truncate max-w-[100px]"
+                          title={`View ${ms.owner}'s Developer Profile`}
+                        >
+                          {ms.owner}
+                        </button>
                       </div>
 
                       {/* Quick Move Status Controls */}

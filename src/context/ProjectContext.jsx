@@ -43,6 +43,21 @@ export function ProjectProvider({ children }) {
 
   const [isIdeaModalOpen, setIsIdeaModalOpen] = useState(false);
 
+  // Developer / Resource Profile Modal State
+  const [selectedDeveloperName, setSelectedDeveloperName] = useState(null);
+  const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
+
+  const openDeveloperProfile = (name) => {
+    if (!name) return;
+    setSelectedDeveloperName(name);
+    setIsDeveloperModalOpen(true);
+  };
+
+  const closeDeveloperProfile = () => {
+    setIsDeveloperModalOpen(false);
+    setSelectedDeveloperName(null);
+  };
+
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY + '_theme');
     return saved ? JSON.parse(saved) : false;
@@ -244,6 +259,9 @@ export function ProjectProvider({ children }) {
       isGoalModalOpen, setIsGoalModalOpen,
       editingGoal, setEditingGoal,
       isIdeaModalOpen, setIsIdeaModalOpen,
+      selectedDeveloperName, setSelectedDeveloperName,
+      isDeveloperModalOpen, setIsDeveloperModalOpen,
+      openDeveloperProfile, closeDeveloperProfile,
       darkMode, setDarkMode,
       ganttZoom, setGanttZoom,
       isTourActive, currentTourStep, startTour, endTour, nextTourStep, prevTourStep,

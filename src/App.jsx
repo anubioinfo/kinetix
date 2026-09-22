@@ -15,6 +15,7 @@ import GoalModal from './components/GoalModal';
 import IdeaModal from './components/IdeaModal';
 import DetailDrawer from './components/Drawer/DetailDrawer';
 import OnboardingTour from './components/OnboardingTour';
+import DeveloperProfileModal from './components/DeveloperProfileModal';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -43,6 +44,7 @@ export default function App() {
         <GoalModal />
         <IdeaModal />
         <DetailDrawer />
+        <DeveloperProfileModal />
         <OnboardingTour />
       </div>
     </ProjectProvider>

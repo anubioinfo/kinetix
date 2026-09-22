@@ -1,9 +1,9 @@
 import React from 'react';
 import { useProject } from '../context/ProjectContext';
-import { Users, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle, ExternalLink, Award } from 'lucide-react';
 
 export default function ResourceView() {
-  const { team, milestones } = useProject();
+  const { team, milestones, openDeveloperProfile } = useProject();
 
   return (
     <div className="space-y-6">
@@ -13,9 +13,9 @@ export default function ResourceView() {
         <div>
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-lg font-bold text-slate-900">Team Workload & Capacity Planning</h2>
+            <h2 className="text-lg font-bold text-slate-900">Developer Metrics & Team Capacity Dashboard</h2>
           </div>
-          <p className="text-xs text-slate-500 font-medium">Monitor weekly hours assigned per owner to balance team throughput</p>
+          <p className="text-xs text-slate-500 font-medium">Click on any team member's name or avatar to view their dedicated Developer Profile & Velocity Metrics</p>
         </div>
       </div>
 
@@ -34,15 +34,21 @@ export default function ResourceView() {
               }`}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div 
+                  onClick={() => openDeveloperProfile(member.name)}
+                  className="flex items-center gap-3 cursor-pointer group"
+                >
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-white shadow-xs text-sm"
+                    className="w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-white shadow-xs text-sm group-hover:scale-110 transition-transform"
                     style={{ backgroundColor: member.color }}
                   >
                     {member.avatar}
                   </div>
                   <div>
-                    <h3 className="text-base font-extrabold text-slate-900">{member.name}</h3>
+                    <h3 className="text-base font-extrabold text-slate-900 group-hover:text-indigo-600 group-hover:underline transition-colors flex items-center gap-1.5">
+                      <span>{member.name}</span>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 text-indigo-600 transition-opacity" />
+                    </h3>
                     <p className="text-xs text-slate-500 font-medium">{member.role}</p>
                   </div>
                 </div>
@@ -80,7 +86,17 @@ export default function ResourceView() {
 
               {/* Assigned Milestones List */}
               <div className="space-y-2 pt-2 border-t border-slate-100">
-                <span className="text-xs font-bold text-slate-500 block">Assigned Milestones ({memberMilestones.length})</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-500 block">Assigned Milestones ({memberMilestones.length})</span>
+                  <button
+                    onClick={() => openDeveloperProfile(member.name)}
+                    className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
+                  >
+                    <Award className="w-3.5 h-3.5" />
+                    <span>View Profile & Metrics →</span>
+                  </button>
+                </div>
+                
                 <div className="space-y-1.5">
                   {memberMilestones.map(m => (
                     <div key={m.id} className="p-2 rounded bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">

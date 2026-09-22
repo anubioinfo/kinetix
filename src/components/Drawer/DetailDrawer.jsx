@@ -13,7 +13,8 @@ export default function DetailDrawer() {
     deleteMilestone,
     setEditingMilestone,
     setIsMilestoneModalOpen,
-    dependencyConflicts
+    dependencyConflicts,
+    openDeveloperProfile
   } = useProject();
 
   const [newFeatureTitle, setNewFeatureTitle] = useState('');
@@ -164,7 +165,17 @@ export default function DetailDrawer() {
             </div>
             <div>
               <span className="text-slate-500 font-bold block text-[10px]">Assigned Lead</span>
-              <span className="text-slate-900 font-bold">{milestone.owner}</span>
+              <button
+                type="button"
+                onClick={() => openDeveloperProfile(milestone.owner)}
+                className="inline-flex items-center gap-1.5 font-bold text-indigo-700 hover:text-indigo-900 hover:underline cursor-pointer group mt-0.5"
+                title={`View ${milestone.owner}'s Developer Profile & Metrics`}
+              >
+                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shadow-2xs group-hover:scale-110 transition-transform">
+                  {(milestone.owner || 'U').substring(0, 1).toUpperCase()}
+                </span>
+                <span>{milestone.owner}</span>
+              </button>
             </div>
             <div>
               <span className="text-slate-500 font-bold block text-[10px]">Status</span>

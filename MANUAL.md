@@ -21,15 +21,16 @@ This deployment is pre-loaded with **KeepNote Ecosystem** (a Google Keep alterna
 
 ## 📑 Table of Contents
 1. [Getting Started](#1-getting-started)
-2. [Roadmap & Interactive Gantt Timeline](#2-roadmap--interactive-gantt-timeline)
-3. [2x2 Priority Matrix & Kinetix RICE Scorecard](#3-2x2-priority-matrix--kinetix-rice-scorecard)
-4. [Drag-and-Drop Kanban Board](#4-drag-and-drop-kanban-board)
-5. [Dependency Graph Visualizer](#5-dependency-graph-visualizer)
-6. [Strategic Goals Hub](#6-strategic-goals-hub)
-7. [Ideas Portal & 1-Click Promotion](#7-ideas-portal--1-click-promotion)
-8. [Resource Workload & Capacity Planning](#8-resource-workload--capacity-planning)
-9. [Guided Interactive Onboarding Tour](#9-guided-interactive-onboarding-tour)
-10. [Data Backup, Export & Import](#10-data-backup-export--import)
+2. [Dedicated Developer Profile Dashboard](#2-dedicated-developer-profile-dashboard)
+3. [Roadmap & Interactive Gantt Timeline](#3-roadmap--interactive-gantt-timeline)
+4. [2x2 Priority Matrix & Kinetix RICE Scorecard](#4-2x2-priority-matrix--kinetix-rice-scorecard)
+5. [Drag-and-Drop Kanban Board](#5-drag-and-drop-kanban-board)
+6. [Dependency Graph Visualizer](#6-dependency-graph-visualizer)
+7. [Strategic Goals Hub](#7-strategic-goals-hub)
+8. [Ideas Portal & 1-Click Promotion](#8-ideas-portal--1-click-promotion)
+9. [Resource Workload & Capacity Planning](#9-resource-workload--capacity-planning)
+10. [Guided Interactive Onboarding Tour](#10-guided-interactive-onboarding-tour)
+11. [Data Backup, Export & Import](#11-data-backup-export--import)
 
 ---
 
@@ -44,7 +45,27 @@ When you launch Kinetix Roadmap (`npm run dev` at `http://localhost:5173`), you 
 
 ---
 
-## 2. Roadmap & Interactive Gantt Timeline
+## 2. Dedicated Developer Profile Dashboard
+
+Every developer name (*Anurag, Jitendra, Nitin, Ram, Akshay, Dinesh, Shyam*) throughout Kinetix Roadmap is **100% interactive and clickable**.
+
+![Developer Profile Dashboard](./docs/images/developer_profile.png)
+
+### How to Access:
+- **From Detail Drawer**: Open any milestone details and click on **Assigned Lead: [Developer Name]**.
+- **From Kanban Cards**: Click the developer name on the bottom-right of any card.
+- **From Team Capacity Dashboard**: Click any team member card under **Developer Metrics & Team Capacity Dashboard**.
+
+### What's Inside the Profile:
+- **Developer Metrics Banner**: Avatar initials, official role, and weekly capacity utilization percentage (*e.g., Nitin — 32/40 hrs, 80% capacity*).
+- **Key Metrics Scorecards**: Assigned Milestones Count, Completed Story Points, Delivery Velocity Score (96%), and Capacity Utilization.
+- **Tech Stack & Primary Skillsets**: Auto-generated tech badges (*e.g., #Python, #FastAPI, #Celery, #FCM, #Redis, #React, #Docker*).
+- **Assigned Milestones Grid**: Interactive list of all milestones owned by this developer. Click any milestone card to open its detail view directly!
+- **Assigned Sub-Features & Tasks Checklist**: Full checklist of engineering tasks owned by this team member across the project.
+
+---
+
+## 3. Roadmap & Interactive Gantt Timeline
 
 The **Kinetix Roadmap & Gantt** module is the core execution engine. It displays 8 core engineering milestones for the KeepNote project with **~60% overall progress completed**.
 
@@ -53,7 +74,7 @@ The **Kinetix Roadmap & Gantt** module is the core execution engine. It displays
 ### Core Interactions:
 
 #### A. Drag-and-Drop Milestone Rescheduling
-1. Click and hold any milestone box (*e.g., FastAPI Backend Architecture, React Native Mobile App*) in the Gantt chart.
+1. Click and hold any milestone box in the Gantt chart.
 2. Drag left or right to shift the start and due dates visually.
 3. Release the mouse button — dates update automatically, and connected dependency arrows re-route in real-time.
 
@@ -63,12 +84,12 @@ The **Kinetix Roadmap & Gantt** module is the core execution engine. It displays
 3. Release the line over the target milestone to establish a new dependency connection.
 
 #### C. Filtering & Detail Drawer
-- Use the **Filter Controls** at the top to filter by Goal, Status (*Completed, In Progress, Under Review, Not Started*), or Health.
-- Click any milestone box to open the **Slide-Over Detail Drawer** to edit owner assignments (Jitendra, Ram, Nitin, Akshay, Dinesh, Shyam), impact scores, and sub-features.
+- Use the **Filter Controls** at the top to filter by Goal, Status, or Health.
+- Click any milestone box to open the **Slide-Over Detail Drawer**. Click the lead's name to view their **Developer Profile Dashboard**.
 
 ---
 
-## 3. 2x2 Priority Matrix & Kinetix RICE Scorecard
+## 4. 2x2 Priority Matrix & Kinetix RICE Scorecard
 
 Prioritize features objectively using 2x2 Effort vs Impact quadrants and the RICE scorecard.
 
@@ -81,28 +102,21 @@ Prioritize features objectively using 2x2 Effort vs Impact quadrants and the RIC
 - **⚠️ Thankless Tasks (Low Impact, High Effort)**: Legacy data migrators.
 
 ### B. Kinetix RICE Prioritization Scorecard
-View stacked feature rankings calculated automatically:
-
 $$\text{RICE Score} = \frac{\text{Reach} \times \text{Impact} \times \text{Confidence}}{\text{Effort}}$$
 
 ![Kinetix RICE Scorecard](./docs/images/rice_scorecard.png)
 
 ---
 
-## 4. Drag-and-Drop Kanban Board
+## 5. Drag-and-Drop Kanban Board
 
 Track daily task execution across KeepNote milestones with assigned team members.
 
 ![Kinetix Kanban Board Screen](./docs/images/kanban_board.png)
 
-### How to Move Tasks:
-1. Click and hold any task card in **Not Started**, **In Progress**, **Under Review**, or **Completed**.
-2. Drag the card into a new column.
-3. Cards dropped into **Completed** update progress to 100% automatically.
-
 ---
 
-## 5. Dependency Graph Visualizer
+## 6. Dependency Graph Visualizer
 
 Understand cross-team dependencies and critical paths between Python backend, mobile app, QA testing, and DevOps milestones.
 
@@ -110,7 +124,7 @@ Understand cross-team dependencies and critical paths between Python backend, mo
 
 ---
 
-## 6. Strategic Goals Hub
+## 7. Strategic Goals Hub
 
 Track progress against KeepNote core objectives:
 1. **Core Engine & Real-Time Sync Infrastructure** (80% Progress)
@@ -122,18 +136,17 @@ Track progress against KeepNote core objectives:
 
 ---
 
-## 7. Ideas Portal & 1-Click Promotion
+## 8. Ideas Portal & 1-Click Promotion
 
 Gather feature requests for KeepNote:
 - **Whisper AI Voice Note Auto-Transcription** (185 Upvotes — *Promoted*)
 - **End-to-End Encrypted Private Vault Notes** (142 Upvotes — *Approved*)
-- **Location-Based Geo-Fenced Push Reminders** (98 Upvotes — *Under Review*)
 
 ![Kinetix Ideas Portal](./docs/images/ideas_portal.png)
 
 ---
 
-## 8. Resource Workload & Capacity Planning
+## 9. Resource Workload & Capacity Planning
 
 Monitor assigned capacity for **Anurag**, **Jitendra**, **Nitin**, **Ram**, **Akshay**, **Dinesh**, and **Shyam**.
 
@@ -141,13 +154,13 @@ Monitor assigned capacity for **Anurag**, **Jitendra**, **Nitin**, **Ram**, **Ak
 
 ---
 
-## 9. Guided Interactive Onboarding Tour
+## 10. Guided Interactive Onboarding Tour
 
 Click **Help & Tour** in the top navigation bar to launch the spotlight tour with high-contrast unblurred target frames.
 
 ---
 
-## 10. Data Backup, Export & Import
+## 11. Data Backup, Export & Import
 
 - **Export CSV**: Downloads `kinetix_milestones.csv`
 - **Export JSON**: Downloads `kinetix_roadmap_export.json`

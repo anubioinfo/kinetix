@@ -1,6 +1,6 @@
 # Kinetix Roadmap — High-Velocity Agile Milestone Execution Engine
 
-> **Enterprise product strategy, interactive Gantt roadmap visualization, RICE prioritization engine, and agile execution platform built for high-velocity teams.**
+> **Enterprise product strategy, interactive Gantt roadmap visualization, RICE prioritization engine, and dedicated Developer Velocity & Profile Engine built for high-velocity teams.**
 
 ---
 
@@ -8,8 +8,9 @@
 
 Kinetix Roadmap is pre-configured with a real-world software engineering project: **KeepNote Ecosystem** — a cross-platform note-taking engine with real-time cloud synchronization, push notifications, voice note transcription, and workspace note sharing.
 
-### 👥 Team Members & Roles
-- **Anurag**: Engineering Manager & Product Lead (Roadmap Oversight)
+### 👥 Team Members & Interactive Developer Profiles
+Click on any team member's name anywhere in the app to open their dedicated **Developer Profile Dashboard**:
+- **Anurag**: Engineering Manager & Product Lead
 - **Jitendra**: Senior Python Developer (FastAPI Architecture, Backend REST & DB Schema)
 - **Nitin**: Python Developer (Firebase FCM & APNs Push Notification Engine)
 - **Ram**: Senior Frontend Developer (React Web Dashboard & TipTap Rich-Text Editor)
@@ -21,6 +22,7 @@ Kinetix Roadmap is pre-configured with a real-world software engineering project
 
 ## 🌟 Key Features Overview
 
+- 👨‍💻 **Dedicated Clickable Developer Profile Dashboard**: Click on any assigned lead name (*e.g. Nitin, Jitendra, Anurag, Ram, Akshay, Dinesh, Shyam*) in the Detail Drawer, Kanban Cards, or Resource Heatmap to view their individual capacity, tech stack tags, story points, velocity score (96%), and assigned milestone list.
 - 📅 **Interactive Drag-and-Drop Gantt Roadmap**: Schedule milestones visually by dragging timeline bars left or right, and connect prerequisite milestone dependency arrows interactively.
 - 🎯 **2x2 Priority Matrix & Kinetix RICE Scorecard**: Evaluate feature effort vs. impact in 4 dynamic quadrants or stack rank features using the RICE formula (*Reach × Impact × Confidence ÷ Effort*).
 - 📋 **Interactive Drag-and-Drop Kanban Board**: Move agile workflow tasks across *Not Started*, *In Progress*, *Under Review*, and *Completed* columns with live completion progress updates.
@@ -34,25 +36,28 @@ Kinetix Roadmap is pre-configured with a real-world software engineering project
 
 ## 🖼️ Kinetix Roadmap Feature Screenshots
 
-### 1. Interactive Gantt Roadmap & Timeline (~60% Progress Completed)
+### 1. Dedicated Developer Profile Dashboard (Clickable Assigned Lead)
+![Dedicated Developer Profile Dashboard](./docs/images/developer_profile.png)
+
+### 2. Interactive Gantt Roadmap & Timeline (~60% Progress Completed)
 ![Kinetix Gantt Roadmap](./docs/images/gantt_roadmap.png)
 
-### 2. 2x2 Priority Matrix (Effort vs. Impact Quadrants)
+### 3. 2x2 Priority Matrix (Effort vs. Impact Quadrants)
 ![Kinetix Priority Matrix](./docs/images/priority_matrix.png)
 
-### 3. Kinetix RICE Prioritization Scorecard
+### 4. Kinetix RICE Prioritization Scorecard
 ![Kinetix RICE Scorecard](./docs/images/rice_scorecard.png)
 
-### 4. Interactive Drag & Drop Kanban Workflow
+### 5. Interactive Drag & Drop Kanban Workflow
 ![Kinetix Kanban Board](./docs/images/kanban_board.png)
 
-### 5. Dependency Graph Network
+### 6. Dependency Graph Network
 ![Kinetix Dependency Graph](./docs/images/dependency_graph.png)
 
-### 6. Strategic Goals Hub & Metrics
+### 7. Strategic Goals Hub & Metrics
 ![Kinetix Strategy Hub](./docs/images/strategy_hub.png)
 
-### 7. Resource Capacity & Workload Heatmap
+### 8. Resource Capacity & Workload Heatmap
 ![Resource Workload](./docs/images/workload.png)
 
 > **For complete visual guides and step-by-step instructions for all screens, see the [📖 Complete Kinetix User Manual](./MANUAL.md).**
@@ -118,9 +123,9 @@ node -v
 ```
 kinetix/
 ├── docs/
-│   └── images/                # High-resolution screenshots of KeepNote project
+│   └── images/                # High-resolution screenshots including Developer Profiles
 ├── src/
-│   ├── components/            # UI components (Header, OnboardingTour, DetailDrawer, etc.)
+│   ├── components/            # UI components (Header, DeveloperProfileModal, OnboardingTour, DetailDrawer, etc.)
 │   ├── context/               # Global state (ProjectContext for roadmap & board state)
 │   ├── data/                  # KeepNote mock data (Milestones, Team, Goals, Ideas)
 │   ├── utils/                 # Export/Import CSV & JSON helpers
