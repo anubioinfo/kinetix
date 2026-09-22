@@ -57,6 +57,7 @@ export default function Header() {
 
   const navItems = [
     { id: 'gantt', label: 'Roadmap & Gantt', icon: Calendar },
+    { id: 'portfolio', label: 'Portfolio & Release Trains', icon: Layers },
     { id: 'priority', label: 'Priority Matrix', icon: Grid },
     { id: 'dependencies', label: 'Dependency Graph', icon: GitCommit },
     { id: 'strategy', label: 'Strategy Hub', icon: Target },
