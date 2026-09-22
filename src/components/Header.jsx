@@ -81,13 +81,13 @@ export default function Header() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
-                Aura Roadmap
+                Kinetix Roadmap
               </h1>
               <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
                 Enterprise v3.0
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-medium">Strategic Milestone Intelligence & Product Engine</p>
+            <p className="text-xs text-slate-500 font-medium">High-Velocity Agile Milestone Execution Engine</p>
           </div>
         </div>
 

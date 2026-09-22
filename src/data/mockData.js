@@ -157,7 +157,7 @@ export const initialMilestones = [
   {
     id: 'ms-5',
     title: '1-Click Jira & CSV Import Wizard',
-    description: 'Allow customers to migrate existing project backlogs into Aura format instantly.',
+    description: 'Allow customers to migrate existing project backlogs into Kinetix format instantly.',
     goalId: 'goal-4',
     startDate: '2026-10-01',
     dueDate: '2026-10-22',

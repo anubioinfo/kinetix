@@ -18,7 +18,7 @@ export const tourSteps = [
     targetId: 'nav-priority',
     tabLabel: 'Priority Matrix',
     title: '2. Priority & Value Engine (2x2 & RICE)',
-    description: 'Evaluate effort vs impact in 4 quadrants or switch to the Aura RICE Scorecard table to rank features automatically.',
+    description: 'Evaluate effort vs impact in 4 quadrants or switch to the Kinetix RICE Scorecard table to rank features automatically.',
     actionLabel: 'Next: Dependency Graph →'
   },
   {

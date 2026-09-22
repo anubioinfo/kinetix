@@ -31,7 +31,7 @@ export default function PriorityMatrixView() {
             <Grid className="w-5 h-5 text-indigo-600" />
             <h2 className="text-lg font-bold text-slate-900">Milestone Prioritization & Value Engine</h2>
           </div>
-          <p className="text-xs text-slate-500 font-medium">Evaluate effort vs impact quadrants and calculate Aura RICE scores</p>
+          <p className="text-xs text-slate-500 font-medium">Evaluate effort vs impact quadrants and calculate Kinetix RICE scores</p>
         </div>
 
         <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
@@ -51,7 +51,7 @@ export default function PriorityMatrixView() {
             }`}
           >
             <Award className="w-3.5 h-3.5" />
-            Aura RICE Scorecard
+            Kinetix RICE Scorecard
           </button>
         </div>
       </div>
@@ -251,7 +251,7 @@ export default function PriorityMatrixView() {
         /* RICE Scorecard Table View */
         <div className="glass-panel rounded-xl overflow-hidden border border-slate-200 shadow-md bg-white">
           <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Aura RICE Prioritization Scorecard Ranking</h3>
+            <h3 className="text-sm font-bold text-slate-900">Kinetix RICE Prioritization Scorecard Ranking</h3>
             <span className="text-xs text-indigo-700 font-mono font-bold">Score = (Reach × Impact × Confidence) ÷ Effort</span>
           </div>
 

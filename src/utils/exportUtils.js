@@ -1,4 +1,4 @@
-export function exportToJSON(data, filename = 'aura_roadmap_export.json') {
+export function exportToJSON(data, filename = 'kinetix_roadmap_export.json') {
   const jsonStr = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -10,7 +10,7 @@ export function exportToJSON(data, filename = 'aura_roadmap_export.json') {
   document.body.removeChild(link);
 }
 
-export function exportMilestonesToCSV(milestones, filename = 'aura_milestones.csv') {
+export function exportMilestonesToCSV(milestones, filename = 'kinetix_milestones.csv') {
   const headers = ['ID', 'Title', 'Status', 'Health', 'Priority', 'Start Date', 'Due Date', 'Progress %', 'Impact', 'Effort', 'Owner', 'Dependencies'];
   const rows = milestones.map(m => [
     `"${m.id}"`,
