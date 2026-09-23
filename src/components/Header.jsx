@@ -348,6 +348,7 @@ export default function Header() {
             return (
               <div key={group.id} className="relative">
                 <button
+                  id={`nav-group-${group.id}`}
                   onClick={() => setOpenNavGroup(isOpen ? null : group.id)}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
                     hasActiveChild 
@@ -370,6 +371,7 @@ export default function Header() {
                       return (
                         <button
                           key={item.id}
+                          id={`nav-${item.id}`}
                           onClick={() => {
                             setActiveView(item.id);
                             setOpenNavGroup(null);
@@ -397,6 +399,7 @@ export default function Header() {
 
           {/* Standalone Button: Data Sync & Integrations */}
           <button
+            id="nav-integrations"
             onClick={() => setActiveView('integrations')}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
               activeView === 'integrations'

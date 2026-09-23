@@ -6,52 +6,52 @@ export const tourSteps = [
   {
     step: 1,
     view: 'gantt',
-    targetId: 'nav-gantt',
-    tabLabel: 'Roadmap & Gantt',
-    title: '1. Roadmap & Interactive Gantt Timeline',
-    description: 'Click here or drag milestone bars left/right to reschedule dates. Drag the blue connector dot (🔵) to link dependencies!',
-    actionLabel: 'Next: Priority Matrix →'
+    targetId: 'nav-group-execution',
+    tabLabel: 'Product Delivery (Roadmap & Gantt)',
+    title: '1. Product Delivery & Interactive Roadmap',
+    description: 'Reschedule dates by dragging milestone bars left or right. Link predecessors & dependencies with 1-click!',
+    actionLabel: 'Next: RICE Priority Matrix →'
   },
   {
     step: 2,
     view: 'priority',
-    targetId: 'nav-priority',
-    tabLabel: 'Priority Matrix',
-    title: '2. Priority & Value Engine (2x2 & RICE)',
-    description: 'Evaluate effort vs impact in 4 quadrants or switch to the Kinetix RICE Scorecard table to rank features automatically.',
-    actionLabel: 'Next: Dependency Graph →'
+    targetId: 'nav-group-execution',
+    tabLabel: 'RICE Priority Matrix',
+    title: '2. Priority & Value Scorecard (2x2 & RICE)',
+    description: 'Evaluate effort vs impact in 4 quadrants or rank features automatically using Reach × Impact × Confidence ÷ Effort.',
+    actionLabel: 'Next: Dependency Network →'
   },
   {
     step: 3,
     view: 'dependencies',
-    targetId: 'nav-dependencies',
-    tabLabel: 'Dependency Graph',
-    title: '3. Dependency Graph & Conflict Inspector',
-    description: 'Map predecessors & successors. If dates overlap, click "Auto-Reschedule" to fix schedule conflicts in 1 click!',
-    actionLabel: 'Next: Strategy Hub →'
+    targetId: 'nav-group-execution',
+    tabLabel: 'Dependency Network',
+    title: '3. Dependency Network & Conflict Inspector',
+    description: 'Map predecessors & successors. If dates overlap, click "Auto-Reschedule" to fix schedule conflicts instantly!',
+    actionLabel: 'Next: Project Workspaces →'
   },
   {
     step: 4,
-    view: 'strategy',
-    targetId: 'nav-strategy',
-    tabLabel: 'Strategy Hub',
-    title: '4. Strategic Goals & Corporate Alignment',
-    description: 'Align milestones to top-level company goals and monitor enterprise goal completion progress.',
-    actionLabel: 'Next: Kanban Workflow →'
+    view: 'projects',
+    targetId: 'nav-group-portfolio',
+    tabLabel: 'Project Workspaces',
+    title: '4. Multi-Project Workspaces & Access Roles',
+    description: 'Create brand new projects from scratch, switch active workspaces, and manage role-based user access permissions.',
+    actionLabel: 'Next: Agile Release Trains →'
   },
   {
     step: 5,
-    view: 'kanban',
-    targetId: 'nav-kanban',
-    tabLabel: 'Kanban Workflow',
-    title: '5. Agile Kanban Workflow Board',
-    description: 'Drag and drop any milestone card into a new column to change status! Dropping into Completed sets progress to 100%.',
+    view: 'portfolio',
+    targetId: 'nav-group-portfolio',
+    tabLabel: 'Agile Release Trains',
+    title: '5. Agile Release Trains (ART) & SAFe Tracks',
+    description: 'Group milestones into Program Increments (PI), track release readiness %, and dispatch release trains with 1-click!',
     actionLabel: 'Next: Ideas Portal →'
   },
   {
     step: 6,
     view: 'ideas',
-    targetId: 'nav-ideas',
+    targetId: 'nav-group-insights',
     tabLabel: 'Ideas Portal',
     title: '6. Stakeholder Ideas Portal & Upvoting',
     description: 'Gather feature suggestions, upvote popular ideas, and click "Promote to Milestone" to convert ideas into roadmap items.',
@@ -60,19 +60,19 @@ export const tourSteps = [
   {
     step: 7,
     view: 'resource',
-    targetId: 'nav-resource',
+    targetId: 'nav-group-insights',
     tabLabel: 'Team Capacity',
     title: '7. Team Workload & Capacity Planning',
-    description: 'Monitor weekly assigned hours per engineer against capacity limits. Over-capacity badges highlight workloads >40 hrs/week.',
-    actionLabel: 'Next: Executive Analytics →'
+    description: 'Monitor weekly assigned hours per engineer against capacity limits to ensure optimal workload distribution.',
+    actionLabel: 'Next: Data Sync & Integrations →'
   },
   {
     step: 8,
-    view: 'analytics',
-    targetId: 'nav-analytics',
-    tabLabel: 'Executive Analytics',
-    title: '8. Executive Analytics & Reports Exporter',
-    description: 'Review overall completion rates, health metrics, and click "Export Full Executive Report" to download CSV data anytime.',
+    view: 'integrations',
+    targetId: 'nav-integrations',
+    tabLabel: 'Data Sync & Integrations',
+    title: '8. Data Sync & Enterprise Integrations',
+    description: 'Import & export project milestones with Excel, CSV, Jira Software Cloud, and Microsoft Project XML format!',
     actionLabel: 'Finish Walkthrough 🎉'
   }
 ];
@@ -119,7 +119,7 @@ export default function OnboardingTour() {
     };
 
     updateRect();
-    const timer = setTimeout(updateRect, 100);
+    const timer = setTimeout(updateRect, 120);
     window.addEventListener('resize', updateRect);
     window.addEventListener('scroll', updateRect);
 
@@ -150,20 +150,20 @@ export default function OnboardingTour() {
 
   if (!isTourActive || !currentStepData) return null;
 
-  // Calculate Popover Position anchored to the target element
+  // Calculate Popover Position anchored directly underneath the option button
   const popoverStyle = targetRect ? {
-    top: Math.min(window.innerHeight - 280, Math.max(80, targetRect.bottom + 12)) + 'px',
-    left: Math.min(window.innerWidth - 440, Math.max(16, targetRect.left)) + 'px'
+    top: Math.min(window.innerHeight - 260, Math.max(90, targetRect.bottom + 12)) + 'px',
+    left: Math.min(window.innerWidth - 460, Math.max(16, targetRect.left - 10)) + 'px'
   } : {
-    top: '50%',
+    top: '110px',
     left: '50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translateX(-50%)'
   };
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-auto select-none">
       
-      {/* Spotlight Box with CSS Box-Shadow Overlay (zero blur, 100% crisp visibility inside spotlight!) */}
+      {/* Spotlight Glowing Frame around the option button */}
       {targetRect && (
         <div
           onClick={nextTourStep}
@@ -173,30 +173,28 @@ export default function OnboardingTour() {
             left: targetRect.left - 6 + 'px',
             width: targetRect.width + 12 + 'px',
             height: targetRect.height + 12 + 'px',
-            boxShadow: '0 0 0 9999px rgba(15, 23, 42, 0.45), 0 10px 25px -5px rgba(99, 102, 241, 0.4)'
+            boxShadow: '0 0 0 9999px rgba(15, 23, 42, 0.45), 0 10px 25px -5px rgba(99, 102, 241, 0.5)'
           }}
-          className="fixed z-50 rounded-xl border-2 border-indigo-600 bg-white cursor-pointer transition-all duration-300 flex items-center justify-center px-3 text-indigo-700 font-extrabold text-xs shadow-2xl"
+          className="fixed z-50 rounded-xl border-2 border-indigo-500 bg-white/10 cursor-pointer transition-all duration-300 flex items-center justify-center px-3 shadow-2xl"
         >
-          {/* Re-render high-contrast label inside spotlight box so option text is 100% readable! */}
-          <div className="flex items-center gap-1.5 text-indigo-900 font-extrabold text-xs">
-            <span>{currentStepData.tabLabel}</span>
-          </div>
-
           {/* Number Badge */}
-          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[11px] flex items-center justify-center shadow-lg border-2 border-white">
+          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[11px] flex items-center justify-center shadow-lg border-2 border-white animate-pulse">
             {currentTourStep + 1}
           </div>
         </div>
       )}
 
-      {/* Anchored Popover Tooltip Card pointing to the Target Element */}
+      {/* Anchored Popover Tooltip Card pointing to the Option Button */}
       <div
         style={popoverStyle}
         className="fixed z-50 w-full max-w-md rounded-2xl border-2 border-indigo-500 shadow-2xl p-5 bg-white space-y-3 animate-slide-up"
       >
         {/* Pointing Arrow Indicator */}
         {targetRect && (
-          <div className="absolute -top-3 left-6 text-indigo-600 drop-shadow-md">
+          <div 
+            className="absolute -top-3 text-indigo-600 drop-shadow-md"
+            style={{ left: Math.min(300, Math.max(20, targetRect.width / 2)) + 'px' }}
+          >
             <ArrowUp className="w-6 h-6 fill-indigo-600 text-indigo-600" />
           </div>
         )}
