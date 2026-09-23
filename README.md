@@ -24,10 +24,10 @@ Click on any team member's name anywhere in the app to open their dedicated **De
 
 - 👨‍💻 **Dedicated Clickable Developer Profile Dashboard**: Click on any assigned lead name (*e.g. Nitin, Jitendra, Anurag, Ram, Akshay, Dinesh, Shyam*) in the Detail Drawer, Kanban Cards, or Resource Heatmap to view their individual capacity, tech stack tags, story points, velocity score (96%), and assigned milestone list.
 - 📅 **Interactive Drag-and-Drop Gantt Roadmap**: Schedule milestones visually by dragging timeline bars left or right, and connect prerequisite milestone dependency arrows interactively.
-- 🎯 **2x2 Priority Matrix & Kinetix RICE Scorecard**: Evaluate feature effort vs. impact in 4 dynamic quadrants or stack rank features using the RICE formula (*Reach × Impact × Confidence ÷ Effort*).
+- 🎯 **2x2 Priority Matrix with Drag-and-Drop & RICE Scorecard**: Evaluate feature effort vs. impact in 4 dynamic quadrants (*Quick Wins, Major Projects, Fill-ins, Thankless Tasks*) with native drag-and-drop reclassification or stack rank features using the RICE formula (*Reach × Impact × Confidence ÷ Effort*).
 - 📋 **Interactive Drag-and-Drop Kanban Board**: Move agile workflow tasks across *Not Started*, *In Progress*, *Under Review*, and *Completed* columns with live completion progress updates.
 - 🎯 **Strategic Goal Hub**: Map engineering milestones to strategic business objectives (*Real-time sync, Mobile launch, Push reminders, Workspace sharing*).
-- 💡 **Ideas Portal with 1-Click Promotion**: Capture customer feature requests and convert approved ideas into active roadmap milestones with a single click.
+- 💡 **Ideas Portal with AI & Vision Categories & Team Autocomplete**: Capture customer feature requests under curated or custom categories (*e.g., AI & Vision, Computer Vision Monitoring*) with team member autocomplete and 1-click milestone promotion.
 - 👥 **Resource Workload & Capacity Planner**: Monitor team allocation across Anurag, Jitendra, Nitin, Ram, Akshay, Dinesh, and Shyam to prevent burnout.
 - 🎓 **Guided Interactive Onboarding Tour**: Unblurred target spotlight tour that guides users through every module.
 - 📤 **CSV & JSON Data Import/Export**: Backup or migrate product roadmaps with 1-click JSON exports (`kinetix_roadmap_export.json`) and CSV milestone exports (`kinetix_milestones.csv`).
