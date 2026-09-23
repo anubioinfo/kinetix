@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useProject } from '../context/ProjectContext';
-import { Grid, Zap, Award, Coffee, AlertCircle, Info, HelpCircle } from 'lucide-react';
+import { Grid, Zap, Award, Coffee, AlertCircle, Info, HelpCircle, GripVertical, Move } from 'lucide-react';
 
 export default function PriorityMatrixView() {
-  const { filteredMilestones, setSelectedMilestoneId } = useProject();
+  const { filteredMilestones, setSelectedMilestoneId, updateMilestone } = useProject();
 
   const [activeTab, setActiveTab] = useState('matrix');
+  const [draggedId, setDraggedId] = useState(null);
+  const [dragOverQuadrant, setDragOverQuadrant] = useState(null);
 
   const quickWins = filteredMilestones.filter(m => m.impact >= 5.5 && m.effort < 5.5);
   const majorProjects = filteredMilestones.filter(m => m.impact >= 5.5 && m.effort >= 5.5);
@@ -20,6 +22,67 @@ export default function PriorityMatrixView() {
     const score = Math.round((reach * impact * confidence) / effort);
     return { ...m, riceScore: score, reach, impactVal: impact, confidence, effortVal: effort };
   }).sort((a, b) => b.riceScore - a.riceScore);
+
+  const handleDragStart = (e, milestoneId) => {
+    e.dataTransfer.setData('text/plain', milestoneId);
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedId(milestoneId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+    setDragOverQuadrant(null);
+  };
+
+  const handleDragOver = (e, quadKey) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverQuadrant !== quadKey) {
+      setDragOverQuadrant(quadKey);
+    }
+  };
+
+  const handleDragLeave = (e, quadKey) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      if (dragOverQuadrant === quadKey) {
+        setDragOverQuadrant(null);
+      }
+    }
+  };
+
+  const handleDrop = (e, targetQuadrant) => {
+    e.preventDefault();
+    setDragOverQuadrant(null);
+    const milestoneId = e.dataTransfer.getData('text/plain') || draggedId;
+    setDraggedId(null);
+    if (!milestoneId) return;
+
+    const milestone = filteredMilestones.find(m => m.id === milestoneId);
+    if (!milestone) return;
+
+    let newImpact = milestone.impact;
+    let newEffort = milestone.effort;
+
+    if (targetQuadrant === 'quickWins') {
+      newImpact = 8;
+      newEffort = 3;
+    } else if (targetQuadrant === 'majorProjects') {
+      newImpact = 8;
+      newEffort = 8;
+    } else if (targetQuadrant === 'fillIns') {
+      newImpact = 3;
+      newEffort = 3;
+    } else if (targetQuadrant === 'thanklessTasks') {
+      newImpact = 3;
+      newEffort = 8;
+    }
+
+    updateMilestone({
+      ...milestone,
+      impact: newImpact,
+      effort: newEffort
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -132,10 +195,26 @@ export default function PriorityMatrixView() {
       {activeTab === 'matrix' ? (
         /* 2x2 Matrix View */
         <div className="space-y-4">
+          
+          {/* Interactive Drag & Drop Helper Banner */}
+          <div className="flex items-center gap-2.5 p-3 px-4 rounded-xl bg-indigo-50/80 border border-indigo-200 text-indigo-900 text-xs font-semibold shadow-2xs">
+            <Move className="w-4 h-4 text-indigo-600 animate-pulse shrink-0" />
+            <span><strong>Interactive Matrix:</strong> Drag and drop any task card between quadrants (Quick Wins, Major Projects, Fill-ins, Thankless Tasks) to reclassify its nature and update its Impact & Effort positioning.</span>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             
             {/* Quadrant 1: Quick Wins (High Impact, Low Effort) */}
-            <div className="glass-panel p-5 rounded-xl border-emerald-200 bg-emerald-50/60 space-y-3 relative overflow-hidden shadow-xs">
+            <div
+              onDragOver={(e) => handleDragOver(e, 'quickWins')}
+              onDragLeave={(e) => handleDragLeave(e, 'quickWins')}
+              onDrop={(e) => handleDrop(e, 'quickWins')}
+              className={`glass-panel p-5 rounded-xl border-emerald-200 bg-emerald-50/60 space-y-3 relative overflow-hidden transition-all duration-150 ${
+                dragOverQuadrant === 'quickWins' 
+                  ? 'ring-2 ring-emerald-500 scale-[1.01] bg-emerald-100/90 border-dashed border-2 border-emerald-500 shadow-md' 
+                  : 'shadow-xs'
+              }`}
+            >
               <div className="flex items-center justify-between border-b border-emerald-200/80 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold shadow-xs">
@@ -151,35 +230,56 @@ export default function PriorityMatrixView() {
                 </span>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 min-h-24">
                 {quickWins.map(m => (
                   <div
                     key={m.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, m.id)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedMilestoneId(m.id)}
-                    className="p-3 bg-white/90 hover:bg-white rounded-lg border border-emerald-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    className={`p-3 bg-white/90 hover:bg-white rounded-lg border border-emerald-200/80 shadow-2xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing flex items-center justify-between gap-3 group ${
+                      draggedId === m.id ? 'opacity-40 border-dashed border-emerald-500' : ''
+                    }`}
                   >
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">{m.title}</div>
-                      <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                        <span>Owner: <strong>{m.owner}</strong></span>
-                        <span>•</span>
-                        <span className="font-mono text-emerald-700 font-semibold">Impact: {m.impact}/10</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <GripVertical className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 cursor-grab" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors truncate">{m.title}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span>Owner: <strong>{m.owner}</strong></span>
+                          <span>•</span>
+                          <span className="font-mono text-emerald-700 font-semibold">Impact: {m.impact}/10</span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600 font-semibold">Effort: {m.effort}/10</span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 shrink-0">
                       P0 Immediate
                     </span>
                   </div>
                 ))}
 
                 {quickWins.length === 0 && (
-                  <p className="text-xs text-slate-500 text-center py-6 italic font-medium">No quick wins found in current filter.</p>
+                  <div className="text-xs text-slate-500 text-center py-6 border-2 border-dashed border-emerald-200 rounded-lg italic font-medium">
+                    Drop tasks here for Quick Wins
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Quadrant 2: Major Projects (High Impact, High Effort) */}
-            <div className="glass-panel p-5 rounded-xl border-indigo-200 bg-indigo-50/60 space-y-3 relative overflow-hidden shadow-xs">
+            <div
+              onDragOver={(e) => handleDragOver(e, 'majorProjects')}
+              onDragLeave={(e) => handleDragLeave(e, 'majorProjects')}
+              onDrop={(e) => handleDrop(e, 'majorProjects')}
+              className={`glass-panel p-5 rounded-xl border-indigo-200 bg-indigo-50/60 space-y-3 relative overflow-hidden transition-all duration-150 ${
+                dragOverQuadrant === 'majorProjects' 
+                  ? 'ring-2 ring-indigo-500 scale-[1.01] bg-indigo-100/90 border-dashed border-2 border-indigo-500 shadow-md' 
+                  : 'shadow-xs'
+              }`}
+            >
               <div className="flex items-center justify-between border-b border-indigo-200/80 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold shadow-xs">
@@ -195,35 +295,56 @@ export default function PriorityMatrixView() {
                 </span>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 min-h-24">
                 {majorProjects.map(m => (
                   <div
                     key={m.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, m.id)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedMilestoneId(m.id)}
-                    className="p-3 bg-white/90 hover:bg-white rounded-lg border border-indigo-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    className={`p-3 bg-white/90 hover:bg-white rounded-lg border border-indigo-200/80 shadow-2xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing flex items-center justify-between gap-3 group ${
+                      draggedId === m.id ? 'opacity-40 border-dashed border-indigo-500' : ''
+                    }`}
                   >
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">{m.title}</div>
-                      <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                        <span>Owner: <strong>{m.owner}</strong></span>
-                        <span>•</span>
-                        <span className="font-mono text-indigo-700 font-semibold">Impact: {m.impact}/10</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <GripVertical className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 cursor-grab" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 transition-colors truncate">{m.title}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span>Owner: <strong>{m.owner}</strong></span>
+                          <span>•</span>
+                          <span className="font-mono text-indigo-700 font-semibold">Impact: {m.impact}/10</span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600 font-semibold">Effort: {m.effort}/10</span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 shrink-0">
                       Strategic
                     </span>
                   </div>
                 ))}
 
                 {majorProjects.length === 0 && (
-                  <p className="text-xs text-slate-500 text-center py-6 italic font-medium">No major projects found in current filter.</p>
+                  <div className="text-xs text-slate-500 text-center py-6 border-2 border-dashed border-indigo-200 rounded-lg italic font-medium">
+                    Drop tasks here for Major Projects
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Quadrant 3: Fill-ins (Low Impact, Low Effort) */}
-            <div className="glass-panel p-5 rounded-xl border-slate-200 bg-slate-50/70 space-y-3 relative overflow-hidden shadow-xs">
+            <div
+              onDragOver={(e) => handleDragOver(e, 'fillIns')}
+              onDragLeave={(e) => handleDragLeave(e, 'fillIns')}
+              onDrop={(e) => handleDrop(e, 'fillIns')}
+              className={`glass-panel p-5 rounded-xl border-slate-200 bg-slate-50/70 space-y-3 relative overflow-hidden transition-all duration-150 ${
+                dragOverQuadrant === 'fillIns' 
+                  ? 'ring-2 ring-slate-500 scale-[1.01] bg-slate-200/90 border-dashed border-2 border-slate-500 shadow-md' 
+                  : 'shadow-xs'
+              }`}
+            >
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-slate-500 text-white flex items-center justify-center font-bold shadow-xs">
@@ -239,35 +360,56 @@ export default function PriorityMatrixView() {
                 </span>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 min-h-24">
                 {fillIns.map(m => (
                   <div
                     key={m.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, m.id)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedMilestoneId(m.id)}
-                    className="p-3 bg-white/90 hover:bg-white rounded-lg border border-slate-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    className={`p-3 bg-white/90 hover:bg-white rounded-lg border border-slate-200 shadow-2xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing flex items-center justify-between gap-3 group ${
+                      draggedId === m.id ? 'opacity-40 border-dashed border-slate-500' : ''
+                    }`}
                   >
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-slate-700 transition-colors">{m.title}</div>
-                      <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                        <span>Owner: <strong>{m.owner}</strong></span>
-                        <span>•</span>
-                        <span className="font-mono text-slate-600 font-semibold">Impact: {m.impact}/10</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <GripVertical className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 cursor-grab" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 group-hover:text-slate-700 transition-colors truncate">{m.title}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span>Owner: <strong>{m.owner}</strong></span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600 font-semibold">Impact: {m.impact}/10</span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600 font-semibold">Effort: {m.effort}/10</span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 shrink-0">
                       Downtime
                     </span>
                   </div>
                 ))}
 
                 {fillIns.length === 0 && (
-                  <p className="text-xs text-slate-500 text-center py-6 italic font-medium">No fill-in tasks found.</p>
+                  <div className="text-xs text-slate-500 text-center py-6 border-2 border-dashed border-slate-300 rounded-lg italic font-medium">
+                    Drop tasks here for Fill-ins
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Quadrant 4: Thankless Tasks (Low Impact, High Effort) */}
-            <div className="glass-panel p-5 rounded-xl border-rose-200 bg-rose-50/60 space-y-3 relative overflow-hidden shadow-xs">
+            <div
+              onDragOver={(e) => handleDragOver(e, 'thanklessTasks')}
+              onDragLeave={(e) => handleDragLeave(e, 'thanklessTasks')}
+              onDrop={(e) => handleDrop(e, 'thanklessTasks')}
+              className={`glass-panel p-5 rounded-xl border-rose-200 bg-rose-50/60 space-y-3 relative overflow-hidden transition-all duration-150 ${
+                dragOverQuadrant === 'thanklessTasks' 
+                  ? 'ring-2 ring-rose-500 scale-[1.01] bg-rose-100/90 border-dashed border-2 border-rose-500 shadow-md' 
+                  : 'shadow-xs'
+              }`}
+            >
               <div className="flex items-center justify-between border-b border-rose-200/80 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center font-bold shadow-xs">
@@ -283,29 +425,41 @@ export default function PriorityMatrixView() {
                 </span>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 min-h-24">
                 {thanklessTasks.map(m => (
                   <div
                     key={m.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, m.id)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedMilestoneId(m.id)}
-                    className="p-3 bg-white/90 hover:bg-white rounded-lg border border-rose-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    className={`p-3 bg-white/90 hover:bg-white rounded-lg border border-rose-200/80 shadow-2xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing flex items-center justify-between gap-3 group ${
+                      draggedId === m.id ? 'opacity-40 border-dashed border-rose-500' : ''
+                    }`}
                   >
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors">{m.title}</div>
-                      <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                        <span>Owner: <strong>{m.owner}</strong></span>
-                        <span>•</span>
-                        <span className="font-mono text-rose-700 font-semibold">Impact: {m.impact}/10</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <GripVertical className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 cursor-grab" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors truncate">{m.title}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span>Owner: <strong>{m.owner}</strong></span>
+                          <span>•</span>
+                          <span className="font-mono text-rose-700 font-semibold">Impact: {m.impact}/10</span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600 font-semibold">Effort: {m.effort}/10</span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800 shrink-0">
                       Deprioritize
                     </span>
                   </div>
                 ))}
 
                 {thanklessTasks.length === 0 && (
-                  <p className="text-xs text-slate-500 text-center py-6 italic font-medium">No low-impact high-effort tasks.</p>
+                  <div className="text-xs text-slate-500 text-center py-6 border-2 border-dashed border-rose-200 rounded-lg italic font-medium">
+                    Drop tasks here for Thankless Tasks
+                  </div>
                 )}
               </div>
             </div>
