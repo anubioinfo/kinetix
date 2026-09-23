@@ -92,17 +92,17 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Navigation Groupings
+  // Navigation Groupings (Executive Professional Titles)
   const navGroups = [
     {
       id: 'execution',
-      label: 'Execution & Roadmaps',
+      label: 'Product Delivery',
       icon: Calendar,
       items: [
-        { id: 'gantt', label: 'Roadmap & Gantt Chart', icon: Calendar, desc: 'Timeline view & milestones' },
-        { id: 'kanban', label: 'Kanban Execution Board', icon: Kanban, desc: 'Agile workflow status columns' },
-        { id: 'priority', label: 'Priority Matrix & RICE', icon: Grid, desc: '2x2 effort vs impact scorecard' },
-        { id: 'dependencies', label: 'Dependency Graph', icon: GitCommit, desc: 'Visual network blocker map' }
+        { id: 'gantt', label: 'Interactive Roadmap', icon: Calendar, desc: 'Timeline view & milestones' },
+        { id: 'kanban', label: 'Agile Kanban Board', icon: Kanban, desc: 'Agile workflow status columns' },
+        { id: 'priority', label: 'RICE Priority Matrix', icon: Grid, desc: '2x2 effort vs impact scorecard' },
+        { id: 'dependencies', label: 'Dependency Network', icon: GitCommit, desc: 'Visual network blocker map' }
       ]
     },
     {
@@ -110,25 +110,25 @@ export default function Header() {
       label: 'Portfolio & Strategy',
       icon: Layers,
       items: [
-        { id: 'projects', label: 'Projects Directory', icon: FolderKanban, desc: 'Multi-project workspace hub' },
-        { id: 'portfolio', label: 'Release Trains (ART)', icon: Layers, desc: 'SAFe Program Increments & release tracks' },
+        { id: 'projects', label: 'Project Workspaces', icon: FolderKanban, desc: 'Multi-project workspace hub' },
+        { id: 'portfolio', label: 'Agile Release Trains', icon: Layers, desc: 'SAFe Program Increments & release tracks' },
         { id: 'strategy', label: 'Strategic Objectives', icon: Target, desc: 'Quarterly goals & OKR alignment' }
       ]
     },
     {
       id: 'insights',
-      label: 'Analytics & Team',
+      label: 'Insights & Capacity',
       icon: BarChart3,
       items: [
-        { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community voting & feature requests' },
-        { id: 'resource', label: 'Team Capacity & Load', icon: Users, desc: 'Workload hours & capacity planning' },
+        { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb, desc: 'Community voting & feature requests' },
+        { id: 'resource', label: 'Team Capacity', icon: Users, desc: 'Workload hours & capacity planning' },
         { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up metrics & health charts' }
       ]
     }
   ];
 
   // Helper to find current active view metadata
-  const allNavItems = navGroups.flatMap(g => g.items).concat([{ id: 'integrations', label: 'Universal Integration', icon: UploadCloud }]);
+  const allNavItems = navGroups.flatMap(g => g.items).concat([{ id: 'integrations', label: 'Data Sync & Integrations', icon: UploadCloud }]);
   const currentNav = allNavItems.find(i => i.id === activeView) || allNavItems[0];
 
   const handleCreateMilestone = () => {
@@ -395,7 +395,7 @@ export default function Header() {
             );
           })}
 
-          {/* Standalone Button: Universal Integration */}
+          {/* Standalone Button: Data Sync & Integrations */}
           <button
             onClick={() => setActiveView('integrations')}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
@@ -405,7 +405,7 @@ export default function Header() {
             }`}
           >
             <UploadCloud className={`w-3.5 h-3.5 ${activeView === 'integrations' ? 'text-white' : 'text-emerald-600'}`} />
-            <span>Universal Integration</span>
+            <span>Data Sync & Integrations</span>
           </button>
 
         </div>

@@ -189,7 +189,7 @@ export default function IntegrationHubModal({ isOpen, onClose }) {
             </div>
             <div>
               <h2 className="text-base font-extrabold flex items-center gap-2">
-                <span>Universal Integration Hub</span>
+                <span>Data Sync & Enterprise Integrations</span>
                 <span className="text-[10px] uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-400/30">Live Sync & Import</span>
               </h2>
               <p className="text-xs text-indigo-200 font-medium">Import, export, & sync milestones with Excel, CSV, Jira, & MS Project</p>

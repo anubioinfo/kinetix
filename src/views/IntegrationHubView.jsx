@@ -177,7 +177,7 @@ export default function IntegrationHubView() {
           </div>
           <div>
             <h2 className="text-xl font-extrabold flex items-center gap-2">
-              <span>Universal Integration Hub</span>
+              <span>Data Sync & Enterprise Integrations</span>
               <span className="text-xs uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-400/30 font-mono">
                 Enterprise Sync Engine
               </span>
