@@ -25,7 +25,10 @@ import {
   Sliders,
   Filter,
   Check,
-  X
+  X,
+  Bell,
+  Bot,
+  Clock
 } from 'lucide-react';
 import { exportMilestonesToCSV } from '../utils/exportUtils';
 
@@ -60,7 +63,15 @@ export default function Header() {
     currentProjectId,
     currentProject,
     switchProject,
-    aiRiskAlerts
+    aiRiskAlerts,
+    // 🔔 Notifications & Webhooks
+    openNotificationDrawer,
+    unreadCount,
+    // 🤖 AI Auto-Scheduler
+    openAutoScheduler,
+    // 🕒 Time Travel
+    timeTravelDate,
+    setTimeTravelDate
   } = useProject();
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -201,6 +212,20 @@ export default function Header() {
             </button>
           )}
 
+          {/* 🔔 Notification Bell Button */}
+          <button
+            onClick={openNotificationDrawer}
+            className="relative p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors shadow-2xs"
+            title="Notification Center & Slack/Teams Webhooks"
+          >
+            <Bell className="w-4 h-4 text-slate-700" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white font-black text-[9px] rounded-full flex items-center justify-center animate-pulse shadow-2xs">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
           {/* Kinetix IQ AI Button */}
           <button
             id="btn-kinetix-iq"
@@ -276,6 +301,20 @@ export default function Header() {
             {isToolsMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up font-medium text-xs divide-y divide-slate-100">
                 <div className="py-1">
+                  <button
+                    onClick={() => { openAutoScheduler(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors text-indigo-700"
+                  >
+                    <Bot className="w-4 h-4 text-indigo-600" />
+                    <span>AI Auto-Scheduler</span>
+                  </button>
+                  <button
+                    onClick={() => { setTimeTravelDate('2026-09-01'); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Clock className="w-4 h-4 text-amber-600" />
+                    <span>Time Travel Mode</span>
+                  </button>
                   <button
                     onClick={() => { openIntegrationHub(); setIsToolsMenuOpen(false); }}
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors"

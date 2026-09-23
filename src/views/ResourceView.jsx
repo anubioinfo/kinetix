@@ -4,7 +4,7 @@ import { Users, AlertTriangle, CheckCircle, ExternalLink, Award, UserPlus, Uploa
 import { downloadTeamSampleTemplate, parseCSVToTeamMembers, exportTeamToCSV } from '../utils/exportUtils';
 
 export default function ResourceView() {
-  const { team, milestones, openDeveloperProfile, addTeamMember, bulkImportTeamMembers } = useProject();
+  const { team, milestones, openDeveloperProfile, addTeamMember, bulkImportTeamMembers, openAutoScheduler } = useProject();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -79,6 +79,15 @@ export default function ResourceView() {
         {/* Action Controls - Sleek & Uniform Neutral Styling */}
         <div className="flex flex-wrap items-center gap-2">
           
+          {/* AI Auto-Rebalance Button */}
+          <button
+            onClick={openAutoScheduler}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs hover:opacity-90 transition-all cursor-pointer"
+            title="Launch AI Auto-Scheduler to balance workloads"
+          >
+            <span>⚡ AI Auto-Rebalance</span>
+          </button>
+
           {/* Add Team Member Manual Modal Button (Primary Dark) */}
           <button
             onClick={() => setIsAddModalOpen(true)}

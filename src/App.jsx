@@ -24,6 +24,9 @@ import AICopilotDrawer from './components/AICopilotDrawer';
 import IntegrationHubModal from './components/IntegrationHubModal';
 import ActivityTicker from './components/ActivityTicker';
 import AIRiskWarningBanner from './components/AIRiskWarningBanner';
+import NotificationDrawer from './components/NotificationDrawer';
+import TimeTravelBar from './components/TimeTravelBar';
+import AutoSchedulerModal from './components/AutoSchedulerModal';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -51,6 +54,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+      <TimeTravelBar />
       <Header />
       <ActivityTicker />
       <AIRiskWarningBanner />
@@ -60,6 +64,8 @@ function AppContent() {
       <IdeaModal />
       <DetailDrawer />
       <DeveloperProfileModal />
+      <NotificationDrawer />
+      <AutoSchedulerModal />
       <AICopilotDrawer isOpen={isAICopilotOpen} onClose={closeAICopilot} />
       <IntegrationHubModal isOpen={isIntegrationModalOpen} onClose={closeIntegrationHub} />
       <OnboardingTour />

@@ -354,6 +354,121 @@ export function ProjectProvider({ children }) {
     addActivityLog('Anurag', 'Promoted Idea', 'idea', `Promoted idea "${idea.title}" to active roadmap milestone`);
   };
 
+  // --- 🔔 Notification Drawer & Webhook Simulator State ---
+  const [notifications, setNotifications] = useState([
+    { id: 'notif-1', title: 'Developer Capacity Alert', message: 'Akshay is over capacity at 110% load (44/40 hrs).', type: 'risk', timestamp: '10m ago', read: false, view: 'resource' },
+    { id: 'notif-2', title: 'Milestone Risk Detected', message: 'Offline Storage Persistence has tight 2-day schedule buffer.', type: 'alert', timestamp: '1h ago', read: false, view: 'gantt' },
+    { id: 'notif-3', title: 'Goal Progress Achieved', message: 'Core Architecture overhaul milestone linked to Q4 Target completed.', type: 'success', timestamp: '3h ago', read: true, view: 'strategy' }
+  ]);
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState(false);
+  const openNotificationDrawer = () => setIsNotificationDrawerOpen(true);
+  const closeNotificationDrawer = () => setIsNotificationDrawerOpen(false);
+
+  const addNotification = (title, message, type = 'info', view = null) => {
+    const newNotif = {
+      id: 'notif-' + Date.now(),
+      title,
+      message,
+      type,
+      timestamp: 'Just now',
+      read: false,
+      view
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+  };
+
+  const markNotificationRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const clearNotifications = () => setNotifications([]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Webhook Simulator State
+  const [webhookConfig, setWebhookConfig] = useState({
+    url: 'https://example.com/api/webhooks/slack-demo',
+    channel: '#kinetix-alerts',
+    enabled: true,
+    events: ['milestone_complete', 'capacity_alert', 'risk_alert']
+  });
+
+  const [webhookLogs, setWebhookLogs] = useState([
+    {
+      id: 'wh-1',
+      timestamp: new Date().toLocaleTimeString(),
+      event: 'capacity_alert',
+      status: 200,
+      payload: {
+        event: 'CAPACITY_BREACH_ALERT',
+        developer: 'Akshay',
+        loadPercentage: 110,
+        assignedHours: 44,
+        capacityHours: 40,
+        timestamp: new Date().toISOString()
+      }
+    }
+  ]);
+
+  const triggerWebhook = (event = 'milestone_update', customPayload = null) => {
+    const payload = customPayload || {
+      event: event.toUpperCase(),
+      workspace: currentProject?.name || 'KeepNote Ecosystem',
+      triggeredBy: 'Anurag',
+      timestamp: new Date().toISOString(),
+      data: {
+        milestonesActive: milestones.length,
+        teamCapacityLoad: '88%'
+      }
+    };
+
+    const newLog = {
+      id: 'wh-' + Date.now(),
+      timestamp: new Date().toLocaleTimeString(),
+      event,
+      status: 200,
+      payload
+    };
+
+    setWebhookLogs(prev => [newLog, ...prev.slice(0, 19)]);
+    addNotification('Webhook Dispatched', `Simulated JSON payload sent to ${webhookConfig.channel}`, 'success', 'integrations');
+  };
+
+  // --- 🕒 Time Travel & Historical Replay State ---
+  const [timeTravelDate, setTimeTravelDate] = useState(null);
+
+  // --- 🤖 AI Auto-Scheduler & Velocity Rebalancer ---
+  const [isAutoSchedulerOpen, setIsAutoSchedulerOpen] = useState(false);
+  const openAutoScheduler = () => setIsAutoSchedulerOpen(true);
+  const closeAutoScheduler = () => setIsAutoSchedulerOpen(false);
+
+  const autoScheduleAndRebalance = () => {
+    // Rebalance algorithm: distribute milestones from overloaded developers to under-capacity members
+    const updatedTeam = [...team];
+    const updatedMilestones = milestones.map(m => {
+      const ownerObj = updatedTeam.find(t => t.name === m.owner);
+      if (!ownerObj || (ownerObj.assignedHours > ownerObj.capacityHours)) {
+        // Find member with lowest load ratio
+        const bestCandidate = [...updatedTeam].sort((a, b) => (a.assignedHours / a.capacityHours) - (b.assignedHours / b.capacityHours))[0];
+        if (bestCandidate && bestCandidate.name !== m.owner) {
+          bestCandidate.assignedHours += 10;
+          if (ownerObj) ownerObj.assignedHours = Math.max(0, ownerObj.assignedHours - 10);
+          return { ...m, owner: bestCandidate.name };
+        }
+      }
+      return m;
+    });
+
+    setMilestones(updatedMilestones);
+    setTeam(updatedTeam);
+    addActivityLog('AI Copilot', 'AI Auto-Rebalance', 'risk', 'Automatically rebalanced developer workloads across active milestones');
+    addNotification('AI Auto-Scheduler Applied', 'Rebalanced developer task allocations to optimize velocity and eliminate burnout.', 'success', 'resource');
+  };
+
   const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
 
   const switchProject = (projId) => {
@@ -465,7 +580,15 @@ export function ProjectProvider({ children }) {
       autoFixDependencies,
       resetDemoData,
       activityLogs, addActivityLog,
-      aiRiskAlerts, applyAIRiskFix
+      aiRiskAlerts, applyAIRiskFix,
+      // 🔔 Notifications & Webhooks
+      notifications, isNotificationDrawerOpen, openNotificationDrawer, closeNotificationDrawer,
+      addNotification, markNotificationRead, markAllNotificationsRead, clearNotifications, unreadCount,
+      webhookConfig, setWebhookConfig, webhookLogs, triggerWebhook,
+      // 🕒 Time Travel
+      timeTravelDate, setTimeTravelDate,
+      // 🤖 AI Auto-Scheduler
+      isAutoSchedulerOpen, openAutoScheduler, closeAutoScheduler, autoScheduleAndRebalance
     }}>
       {children}
     </ProjectContext.Provider>
