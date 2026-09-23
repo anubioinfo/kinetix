@@ -189,7 +189,7 @@ export default function ResourceView() {
                     {member.assignedHours} / {member.capacityHours} hrs ({percent}%)
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       isOverCapacity ? 'bg-rose-500' : 'bg-indigo-600'
