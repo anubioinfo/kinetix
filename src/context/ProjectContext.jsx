@@ -134,99 +134,9 @@ export function ProjectProvider({ children }) {
   // Dependency Conflicts
   const dependencyConflicts = detectDependencyConflicts(milestones);
 
-  // CRUD Operations for Milestones
-  const addMilestone = (newMs) => {
-    const created = {
-      ...newMs,
-      id: 'ms-' + Date.now(),
-      progress: newMs.progress || 0,
-      dependencies: newMs.dependencies || [],
-      features: newMs.features || [],
-      impact: newMs.impact || 5,
-      effort: newMs.effort || 5,
-      riceReach: newMs.riceReach || 1000,
-      riceImpact: newMs.riceImpact || 2,
-      riceConfidence: newMs.riceConfidence || 0.8,
-      riceEffort: newMs.riceEffort || 2,
-    };
-    setMilestones(prev => [created, ...prev]);
-  };
-
-  const updateMilestone = (updatedMs) => {
-    setMilestones(prev => prev.map(m => m.id === updatedMs.id ? updatedMs : m));
-  };
-
-  const deleteMilestone = (id) => {
-    setMilestones(prev => {
-      // Remove milestone and clean dependencies from other milestones
-      return prev
-        .filter(m => m.id !== id)
-        .map(m => ({
-          ...m,
-          dependencies: (m.dependencies || []).filter(depId => depId !== id)
-        }));
-    });
-    if (selectedMilestoneId === id) setSelectedMilestoneId(null);
-  };
-
   const autoFixDependencies = () => {
     const fixed = autoRescheduleDependencies(milestones);
     setMilestones(fixed);
-  };
-
-  // Strategic Goal CRUD
-  const addGoal = (newGoal) => {
-    const created = {
-      ...newGoal,
-      id: 'goal-' + Date.now(),
-      progress: 0
-    };
-    setGoals(prev => [...prev, created]);
-  };
-
-  const updateGoal = (updatedGoal) => {
-    setGoals(prev => prev.map(g => g.id === updatedGoal.id ? updatedGoal : g));
-  };
-
-  const deleteGoal = (id) => {
-    setGoals(prev => prev.filter(g => g.id !== id));
-  };
-
-  // Ideas CRUD & Promotion
-  const addIdea = (newIdea) => {
-    const created = {
-      ...newIdea,
-      id: 'idea-' + Date.now(),
-      votes: 1,
-      status: 'Under Review',
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-    setIdeas(prev => [created, ...prev]);
-  };
-
-  const voteIdea = (id) => {
-    setIdeas(prev => prev.map(i => i.id === id ? { ...i, votes: i.votes + 1 } : i));
-  };
-
-  const promoteIdeaToMilestone = (idea) => {
-    const newMs = {
-      title: idea.title,
-      description: idea.description,
-      goalId: goals[0]?.id || 'goal-1',
-      startDate: new Date().toISOString().split('T')[0],
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      status: 'Not Started',
-      health: 'On Track',
-      priority: 'P1',
-      impact: 8,
-      effort: 5,
-      owner: 'Sarah Jenkins',
-      tags: ['Idea Promotion', idea.category || 'Feature'],
-      progress: 0,
-      dependencies: []
-    };
-    addMilestone(newMs);
-    setIdeas(prev => prev.map(i => i.id === idea.id ? { ...i, status: 'Promoted' } : i));
   };
 
   // Demo Reset
@@ -256,12 +166,202 @@ export function ProjectProvider({ children }) {
     return matchesSearch && matchesGoal && matchesPriority && matchesHealth && matchesOwner;
   });
 
+  // Real-Time Audit Log & Activity Ticker State
+  const [activityLogs, setActivityLogs] = useState(() => [
+    { id: 'log-1', timestamp: 'Just now', user: 'Anurag', action: 'Reclassified Milestone', type: 'matrix', details: 'Moved "CV Installation Monitoring" to Quick Wins (Impact: 8, Effort: 3)' },
+    { id: 'log-2', timestamp: '4 mins ago', user: 'Nitin', action: 'Completed Sub-Task', type: 'task', details: 'Finished "FCM Push Payload Schema" (3 pts)' },
+    { id: 'log-3', timestamp: '12 mins ago', user: 'Jitendra', action: 'Updated Milestone', type: 'milestone', details: 'Set "FastAPI Backend Architecture" status to Under Review' },
+    { id: 'log-4', timestamp: '25 mins ago', user: 'Akshay', action: 'Created Idea', type: 'idea', details: 'Submitted "BLE Sensor Connection" in AI & Vision' },
+    { id: 'log-5', timestamp: '1 hour ago', user: 'Sarah', action: 'Rescheduled Milestone', type: 'gantt', details: 'Shifted "SOC2 Audit Compliance" target due date by +7 days' }
+  ]);
+
+  const addActivityLog = (user, action, type, details) => {
+    const newLog = {
+      id: 'log-' + Date.now(),
+      timestamp: 'Just now',
+      user: user || 'Anurag',
+      action,
+      type,
+      details
+    };
+    setActivityLogs(prev => [newLog, ...prev.slice(0, 49)]);
+  };
+
+  // AI-Powered Risk & Burnout Diagnostics Engine
+  const aiRiskAlerts = React.useMemo(() => {
+    const alerts = [];
+
+    // 1. Developer Burnout Analysis
+    const memberLoads = {};
+    milestones.forEach(m => {
+      const owner = m.owner || 'Unassigned';
+      memberLoads[owner] = (memberLoads[owner] || 0) + (m.progress < 100 ? 1 : 0);
+    });
+
+    Object.entries(memberLoads).forEach(([name, count]) => {
+      if (count >= 3) {
+        alerts.push({
+          id: `risk-burnout-${name}`,
+          type: 'burnout',
+          severity: 'high',
+          targetName: name,
+          title: `🔥 Developer Capacity Burnout: ${name}`,
+          message: `${name} is currently assigned ${count} active milestones simultaneously (135% workload capacity).`,
+          remediationText: `Reallocate 1 milestone from ${name} to Dinesh/Shyam`,
+          fixAction: 'rebalance'
+        });
+      }
+    });
+
+    // 2. Schedule Dependency Conflict Analysis
+    if (dependencyConflicts.length > 0) {
+      alerts.push({
+        id: 'risk-dep-bottleneck',
+        type: 'dependency',
+        severity: 'critical',
+        targetName: 'Dependencies',
+        title: `🚨 Schedule Dependency Loop Detected`,
+        message: `${dependencyConflicts.length} milestone dependency timing conflicts threaten downstream sprint deliveries.`,
+        remediationText: 'Auto-reschedule dependent milestones (+14 days buffer)',
+        fixAction: 'autofix'
+      });
+    }
+
+    // 3. At-Risk Health Milestone Analysis
+    const atRiskMs = milestones.filter(m => m.health === 'At Risk' || m.health === 'Off Track');
+    if (atRiskMs.length > 0) {
+      alerts.push({
+        id: 'risk-at-risk-milestones',
+        type: 'health',
+        severity: 'medium',
+        targetName: atRiskMs[0].title,
+        title: `⚠️ Milestone At-Risk: "${atRiskMs[0].title}"`,
+        message: `Milestone has reached ${atRiskMs[0].progress}% completion but target due date is approaching.`,
+        remediationText: 'Extend due date by +14 days & set health to On Track',
+        fixAction: 'extendDate',
+        targetId: atRiskMs[0].id
+      });
+    }
+
+    return alerts;
+  }, [milestones, dependencyConflicts]);
+
+  const applyAIRiskFix = (alertId) => {
+    const alert = aiRiskAlerts.find(a => a.id === alertId);
+    if (!alert) return;
+
+    if (alert.fixAction === 'rebalance') {
+      // Find milestone owned by overloaded lead and reassign to Dinesh
+      const overloadedMs = milestones.find(m => m.owner === alert.targetName && m.progress < 100);
+      if (overloadedMs) {
+        setMilestones(prev => prev.map(m => m.id === overloadedMs.id ? { ...m, owner: 'Dinesh' } : m));
+        addActivityLog('Kinetix AI', 'AI Risk Remediation', 'risk', `Reassigned "${overloadedMs.title}" from ${alert.targetName} to Dinesh`);
+      }
+    } else if (alert.fixAction === 'autofix') {
+      autoFixDependencies();
+      addActivityLog('Kinetix AI', 'AI Risk Remediation', 'risk', 'Auto-adjusted milestone schedules to resolve circular dependency loop');
+    } else if (alert.fixAction === 'extendDate' && alert.targetId) {
+      setMilestones(prev => prev.map(m => {
+        if (m.id === alert.targetId) {
+          const currentDue = new Date(m.dueDate || Date.now());
+          currentDue.setDate(currentDue.getDate() + 14);
+          const newDueDate = currentDue.toISOString().split('T')[0];
+          return { ...m, dueDate: newDueDate, health: 'On Track' };
+        }
+        return m;
+      }));
+      addActivityLog('Kinetix AI', 'AI Risk Remediation', 'risk', `Extended due date for "${alert.targetName}" by +14 days and reset health to On Track`);
+    }
+  };
+
+  const addGoal = (newGoal) => {
+    setGoals(prev => [...prev, newGoal]);
+    addActivityLog('Anurag', 'Created Goal', 'goal', `Added strategic goal "${newGoal.title}"`);
+  };
+
+  const updateGoal = (updated) => {
+    setGoals(prev => prev.map(g => g.id === updated.id ? updated : g));
+    addActivityLog('Anurag', 'Updated Goal', 'goal', `Updated strategic goal "${updated.title}"`);
+  };
+
+  const deleteGoal = (goalId) => {
+    setGoals(prev => prev.filter(g => g.id !== goalId));
+    addActivityLog('Anurag', 'Deleted Goal', 'goal', `Removed strategic goal #${goalId}`);
+  };
+
+  const addMilestone = (newMs) => {
+    const created = {
+      ...newMs,
+      id: 'ms-' + Date.now(),
+      progress: newMs.progress || 0,
+      features: newMs.features || []
+    };
+    setMilestones(prev => [...prev, created]);
+    addActivityLog(created.owner || 'Anurag', 'Created Milestone', 'milestone', `Created milestone "${created.title}"`);
+  };
+
+  const updateMilestone = (updated) => {
+    setMilestones(prev => prev.map(m => m.id === updated.id ? updated : m));
+    addActivityLog(updated.owner || 'Anurag', 'Updated Milestone', 'milestone', `Updated milestone "${updated.title}"`);
+  };
+
+  const deleteMilestone = (msId) => {
+    const target = milestones.find(m => m.id === msId);
+    setMilestones(prev => prev.filter(m => m.id !== msId));
+    if (target) {
+      addActivityLog(target.owner || 'Anurag', 'Deleted Milestone', 'milestone', `Deleted milestone "${target.title}"`);
+    }
+  };
+
+  const addIdea = (newIdea) => {
+    setIdeas(prev => [...prev, newIdea]);
+    addActivityLog(newIdea.author || 'Anurag', 'Submitted Idea', 'idea', `Submitted idea "${newIdea.title}" under ${newIdea.category}`);
+  };
+
+  const voteIdea = (ideaId) => {
+    setIdeas(prev => prev.map(i => i.id === ideaId ? { ...i, votes: i.votes + 1 } : i));
+    const target = ideas.find(i => i.id === ideaId);
+    if (target) {
+      addActivityLog('Anurag', 'Voted Idea', 'idea', `Upvoted idea "${target.title}" (${target.votes + 1} votes)`);
+    }
+  };
+
+  const promoteIdeaToMilestone = (ideaId) => {
+    const idea = ideas.find(i => i.id === ideaId);
+    if (!idea) return;
+
+    const newMs = {
+      id: 'ms-' + Date.now(),
+      title: idea.title,
+      description: idea.description,
+      goalId: goals[0]?.id || 'g-1',
+      startDate: new Date().toISOString().split('T')[0],
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'Not Started',
+      health: 'On Track',
+      priority: 'P1',
+      impact: 7,
+      effort: 4,
+      owner: 'Anurag',
+      progress: 0,
+      dependencies: [],
+      features: []
+    };
+
+    setMilestones(prev => [...prev, newMs]);
+    setIdeas(prev => prev.map(i => i.id === ideaId ? { ...i, status: 'Approved' } : i));
+    setSelectedMilestoneId(newMs.id);
+    addActivityLog('Anurag', 'Promoted Idea', 'idea', `Promoted idea "${idea.title}" to active roadmap milestone`);
+  };
+
   const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
 
   const switchProject = (projId) => {
     setCurrentProjectId(projId);
     const targetProj = projects.find(p => p.id === projId);
     if (!targetProj) return;
+
+    addActivityLog('Anurag', 'Switched Workspace', 'project', `Switched active workspace to "${targetProj.name}"`);
 
     if (projId === 'proj-1') {
       setGoals(initialGoals);
@@ -289,6 +389,7 @@ export function ProjectProvider({ children }) {
   const addProject = (newProj, isBlank = true) => {
     setProjects(prev => [...prev, newProj]);
     setCurrentProjectId(newProj.id);
+    addActivityLog('Anurag', 'Created Project', 'project', `Created new workspace "${newProj.name}"`);
 
     if (isBlank) {
       setGoals([]);
@@ -304,6 +405,7 @@ export function ProjectProvider({ children }) {
       }
       return p;
     }));
+    addActivityLog('Anurag', 'Updated Access', 'project', `Updated team permissions for project #${projId}`);
   };
 
   return (
@@ -338,7 +440,9 @@ export function ProjectProvider({ children }) {
       isTourActive, currentTourStep, startTour, endTour, nextTourStep, prevTourStep,
       dependencyConflicts,
       autoFixDependencies,
-      resetDemoData
+      resetDemoData,
+      activityLogs, addActivityLog,
+      aiRiskAlerts, applyAIRiskFix
     }}>
       {children}
     </ProjectContext.Provider>

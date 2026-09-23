@@ -22,6 +22,7 @@ import {
   ChevronDown,
   FolderPlus,
   SlidersHorizontal,
+  Sliders,
   Filter,
   Check,
   X
@@ -58,7 +59,8 @@ export default function Header() {
     projects,
     currentProjectId,
     currentProject,
-    switchProject
+    switchProject,
+    aiRiskAlerts
   } = useProject();
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -108,6 +110,7 @@ export default function Header() {
     { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community upvoting & feature requests' },
     { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation' },
     { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up & velocity reporting' },
+    { id: 'whatif', label: 'What-If Schedule Simulator', icon: Sliders, desc: 'Monte Carlo stochastic forecasting' }
   ];
 
   const activeFiltersCount = (filterGoal !== 'all' ? 1 : 0) + 
