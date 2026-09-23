@@ -316,7 +316,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between gap-3">
         
         {/* Sleek Segmented Navigation Pills */}
-        <nav className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
+        <nav className="flex items-center gap-1 flex-wrap py-0.5 relative z-30">
           {primaryTabs.map((item) => {
             const Icon = item.icon;
             const isActive = activeView === item.id;
