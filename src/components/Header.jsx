@@ -25,7 +25,10 @@ import {
   ChevronDown,
   FolderPlus,
   Settings,
-  Menu
+  Menu,
+  Check,
+  TrendingUp,
+  SlidersHorizontal
 } from 'lucide-react';
 import { exportMilestonesToCSV, exportToJSON } from '../utils/exportUtils';
 
@@ -66,9 +69,11 @@ export default function Header() {
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
+  const [openNavGroup, setOpenNavGroup] = useState(null); // 'execution' | 'portfolio' | 'insights' | null
 
   const createMenuRef = useRef(null);
   const toolsMenuRef = useRef(null);
+  const navMenuRef = useRef(null);
 
   // Close dropdowns on click outside
   useEffect(() => {
@@ -79,24 +84,52 @@ export default function Header() {
       if (toolsMenuRef.current && !toolsMenuRef.current.contains(event.target)) {
         setIsToolsMenuOpen(false);
       }
+      if (navMenuRef.current && !navMenuRef.current.contains(event.target)) {
+        setOpenNavGroup(null);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const navItems = [
-    { id: 'gantt', label: 'Roadmap & Gantt', icon: Calendar, category: 'Execution' },
-    { id: 'kanban', label: 'Kanban Workflow', icon: Kanban, category: 'Execution' },
-    { id: 'priority', label: 'Priority Matrix', icon: Grid, category: 'Execution' },
-    { id: 'dependencies', label: 'Dependencies', icon: GitCommit, category: 'Execution' },
-    { id: 'projects', label: 'Projects Directory', icon: FolderKanban, category: 'Portfolio' },
-    { id: 'portfolio', label: 'Release Trains (ART)', icon: Layers, category: 'Portfolio' },
-    { id: 'strategy', label: 'Strategy Hub', icon: Target, category: 'Portfolio' },
-    { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb, category: 'Insights' },
-    { id: 'resource', label: 'Team Capacity', icon: Users, category: 'Insights' },
-    { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, category: 'Insights' },
-    { id: 'integrations', label: 'Universal Integration', icon: UploadCloud, category: 'Tools' },
+  // Navigation Groupings
+  const navGroups = [
+    {
+      id: 'execution',
+      label: 'Execution & Roadmaps',
+      icon: Calendar,
+      items: [
+        { id: 'gantt', label: 'Roadmap & Gantt Chart', icon: Calendar, desc: 'Timeline view & milestones' },
+        { id: 'kanban', label: 'Kanban Execution Board', icon: Kanban, desc: 'Agile workflow status columns' },
+        { id: 'priority', label: 'Priority Matrix & RICE', icon: Grid, desc: '2x2 effort vs impact scorecard' },
+        { id: 'dependencies', label: 'Dependency Graph', icon: GitCommit, desc: 'Visual network blocker map' }
+      ]
+    },
+    {
+      id: 'portfolio',
+      label: 'Portfolio & Strategy',
+      icon: Layers,
+      items: [
+        { id: 'projects', label: 'Projects Directory', icon: FolderKanban, desc: 'Multi-project workspace hub' },
+        { id: 'portfolio', label: 'Release Trains (ART)', icon: Layers, desc: 'SAFe Program Increments & release tracks' },
+        { id: 'strategy', label: 'Strategic Objectives', icon: Target, desc: 'Quarterly goals & OKR alignment' }
+      ]
+    },
+    {
+      id: 'insights',
+      label: 'Analytics & Team',
+      icon: BarChart3,
+      items: [
+        { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community voting & feature requests' },
+        { id: 'resource', label: 'Team Capacity & Load', icon: Users, desc: 'Workload hours & capacity planning' },
+        { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up metrics & health charts' }
+      ]
+    }
   ];
+
+  // Helper to find current active view metadata
+  const allNavItems = navGroups.flatMap(g => g.items).concat([{ id: 'integrations', label: 'Universal Integration', icon: UploadCloud }]);
+  const currentNav = allNavItems.find(i => i.id === activeView) || allNavItems[0];
 
   const handleCreateMilestone = () => {
     setEditingMilestone(null);
@@ -167,7 +200,7 @@ export default function Header() {
           )}
         </div>
 
-        {/* STREAMLINED GROUPED ACTION BUTTONS */}
+        {/* STREAMLINED ACTION BUTTONS */}
         <div className="flex items-center gap-2">
           
           {/* Conflict Reschedule Warning Pill */}
@@ -296,40 +329,86 @@ export default function Header() {
 
       </div>
 
-      {/* Navigation Tabs Bar with Categorized Visual Pill Sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between border-t border-slate-200/80 pt-1">
-        <nav className="flex space-x-1 overflow-x-auto py-1 scrollbar-none items-center">
-          {navItems.map((item, idx) => {
-            const Icon = item.icon;
-            const isActive = activeView === item.id;
-            
-            // Add subtle category dividers
-            const showDivider = idx > 0 && navItems[idx - 1].category !== item.category;
+      {/* ZERO HORIZONTAL SCROLL GROUPED NAVIGATION BAR */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between border-t border-slate-200/80 py-1.5">
+        <div className="flex items-center gap-2 flex-wrap w-full" ref={navMenuRef}>
+          
+          {/* Active View Title Badge Indicator */}
+          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-slate-900 text-white rounded-lg text-xs font-extrabold shadow-2xs mr-2">
+            <currentNav.icon className="w-3.5 h-3.5 text-indigo-300" />
+            <span>{currentNav.label}</span>
+          </div>
+
+          {/* Group 1: Execution & Roadmaps Dropdown */}
+          {navGroups.map((group) => {
+            const GroupIcon = group.icon;
+            const hasActiveChild = group.items.some(i => i.id === activeView);
+            const isOpen = openNavGroup === group.id;
 
             return (
-              <React.Fragment key={item.id}>
-                {showDivider && (
-                  <div className="h-4 w-px bg-slate-200 mx-1.5 self-center" />
-                )}
+              <div key={group.id} className="relative">
                 <button
-                  id={`nav-${item.id}`}
-                  onClick={() => setActiveView(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'bg-indigo-50 text-indigo-700 border-b-2 border-indigo-600 font-extrabold shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  onClick={() => setOpenNavGroup(isOpen ? null : group.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
+                    hasActiveChild 
+                      ? 'bg-indigo-600 text-white border-indigo-700 shadow-2xs font-extrabold' 
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
-                  {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
-                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                  )}
+                  <GroupIcon className={`w-3.5 h-3.5 ${hasActiveChild ? 'text-white' : 'text-indigo-600'}`} />
+                  <span>{group.label}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
-              </React.Fragment>
+
+                {/* Dropdown Menu */}
+                {isOpen && (
+                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up text-xs font-medium divide-y divide-slate-100">
+                    {group.items.map((item) => {
+                      const ItemIcon = item.icon;
+                      const isItemSelected = activeView === item.id;
+
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setActiveView(item.id);
+                            setOpenNavGroup(null);
+                          }}
+                          className={`w-full text-left px-3.5 py-2 flex items-start gap-2.5 transition-colors ${
+                            isItemSelected ? 'bg-indigo-50/90 text-indigo-900 font-extrabold' : 'hover:bg-slate-50 text-slate-800'
+                          }`}
+                        >
+                          <ItemIcon className={`w-4 h-4 shrink-0 mt-0.5 ${isItemSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="truncate">{item.label}</span>
+                              {isItemSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
+                            </div>
+                            <span className="text-[10px] text-slate-400 font-normal block truncate">{item.desc}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
-        </nav>
+
+          {/* Standalone Button: Universal Integration */}
+          <button
+            onClick={() => setActiveView('integrations')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
+              activeView === 'integrations'
+                ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs font-extrabold'
+                : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            <UploadCloud className={`w-3.5 h-3.5 ${activeView === 'integrations' ? 'text-white' : 'text-emerald-600'}`} />
+            <span>Universal Integration</span>
+          </button>
+
+        </div>
       </div>
 
       {/* Filter Toolbar Bar */}
