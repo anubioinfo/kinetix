@@ -25,4 +25,8 @@ dist-ssr
 
 # Documentation & Requirements
 FUNCTIONAL_REQUIREMENTS_V1.md
+*.docx
+generate_docx.js
+generate_docx.cjs
+
 
