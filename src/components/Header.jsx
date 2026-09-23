@@ -11,12 +11,9 @@ import {
   BarChart3, 
   Plus, 
   Search, 
-  AlertTriangle, 
   Wand2, 
   Download, 
   RotateCcw, 
-  Sun, 
-  Moon,
   Sparkles,
   Layers,
   HelpCircle,
@@ -24,13 +21,12 @@ import {
   FolderKanban,
   ChevronDown,
   FolderPlus,
-  Settings,
-  Menu,
+  SlidersHorizontal,
+  Filter,
   Check,
-  TrendingUp,
-  SlidersHorizontal
+  X
 } from 'lucide-react';
-import { exportMilestonesToCSV, exportToJSON } from '../utils/exportUtils';
+import { exportMilestonesToCSV } from '../utils/exportUtils';
 
 export default function Header() {
   const {
@@ -53,8 +49,6 @@ export default function Header() {
     setEditingMilestone,
     setIsGoalModalOpen,
     setIsIdeaModalOpen,
-    darkMode,
-    setDarkMode,
     dependencyConflicts,
     autoFixDependencies,
     resetDemoData,
@@ -69,11 +63,13 @@ export default function Header() {
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
-  const [openNavGroup, setOpenNavGroup] = useState(null); // 'execution' | 'portfolio' | 'insights' | null
+  const [isMoreViewsOpen, setIsMoreViewsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const createMenuRef = useRef(null);
   const toolsMenuRef = useRef(null);
-  const navMenuRef = useRef(null);
+  const moreViewsRef = useRef(null);
+  const filterRef = useRef(null);
 
   // Close dropdowns on click outside
   useEffect(() => {
@@ -84,52 +80,42 @@ export default function Header() {
       if (toolsMenuRef.current && !toolsMenuRef.current.contains(event.target)) {
         setIsToolsMenuOpen(false);
       }
-      if (navMenuRef.current && !navMenuRef.current.contains(event.target)) {
-        setOpenNavGroup(null);
+      if (moreViewsRef.current && !moreViewsRef.current.contains(event.target)) {
+        setIsMoreViewsOpen(false);
+      }
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Navigation Groupings (Executive Professional Titles)
-  const navGroups = [
-    {
-      id: 'execution',
-      label: 'Product Delivery',
-      icon: Calendar,
-      items: [
-        { id: 'gantt', label: 'Interactive Roadmap', icon: Calendar, desc: 'Timeline view & milestones' },
-        { id: 'kanban', label: 'Agile Kanban Board', icon: Kanban, desc: 'Agile workflow status columns' },
-        { id: 'priority', label: 'RICE Priority Matrix', icon: Grid, desc: '2x2 effort vs impact scorecard' },
-        { id: 'dependencies', label: 'Dependency Network', icon: GitCommit, desc: 'Visual network blocker map' }
-      ]
-    },
-    {
-      id: 'portfolio',
-      label: 'Portfolio & Strategy',
-      icon: Layers,
-      items: [
-        { id: 'projects', label: 'Project Workspaces', icon: FolderKanban, desc: 'Multi-project workspace hub' },
-        { id: 'portfolio', label: 'Agile Release Trains', icon: Layers, desc: 'SAFe Program Increments & release tracks' },
-        { id: 'strategy', label: 'Strategic Objectives', icon: Target, desc: 'Quarterly goals & OKR alignment' }
-      ]
-    },
-    {
-      id: 'insights',
-      label: 'Insights & Capacity',
-      icon: BarChart3,
-      items: [
-        { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb, desc: 'Community voting & feature requests' },
-        { id: 'resource', label: 'Team Capacity', icon: Users, desc: 'Workload hours & capacity planning' },
-        { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up metrics & health charts' }
-      ]
-    }
+  // Primary 1-Click Navigation Tabs
+  const primaryTabs = [
+    { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-group-execution' },
+    { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban' },
+    { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority' },
+    { id: 'dependencies', label: 'Dependencies', icon: GitCommit, targetId: 'nav-dependencies' },
+    { id: 'projects', label: 'Workspaces', icon: FolderKanban, targetId: 'nav-group-portfolio' },
+    { id: 'portfolio', label: 'Release Trains', icon: Layers, targetId: 'nav-portfolio' },
+    { id: 'integrations', label: 'Data Sync', icon: UploadCloud, targetId: 'nav-integrations' },
   ];
 
-  // Helper to find current active view metadata
-  const allNavItems = navGroups.flatMap(g => g.items).concat([{ id: 'integrations', label: 'Data Sync & Integrations', icon: UploadCloud }]);
-  const currentNav = allNavItems.find(i => i.id === activeView) || allNavItems[0];
+  // Secondary Views in 'More Views' Dropdown
+  const secondaryTabs = [
+    { id: 'strategy', label: 'Strategic Goals & OKRs', icon: Target, desc: 'Corporate target alignment' },
+    { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community upvoting & feature requests' },
+    { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation' },
+    { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up & velocity reporting' },
+  ];
+
+  const activeFiltersCount = (filterGoal !== 'all' ? 1 : 0) + 
+                             (filterPriority !== 'all' ? 1 : 0) + 
+                             (filterHealth !== 'all' ? 1 : 0) + 
+                             (filterOwner !== 'all' ? 1 : 0);
+
+  const isSecondaryActive = secondaryTabs.some(t => t.id === activeView);
 
   const handleCreateMilestone = () => {
     setEditingMilestone(null);
@@ -137,58 +123,55 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-      {/* Top Brand & Actions Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs">
+      
+      {/* ROW 1: MASTER BRAND & ACTION BAR */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100">
         
-        {/* Logo & Project Switcher */}
+        {/* Brand Logo & Project Switcher */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-teal-400 flex items-center justify-center shadow-md shadow-indigo-200 shrink-0">
-            <Sparkles className="w-5 h-5 text-white animate-pulse" />
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 flex items-center justify-center shadow-md shadow-indigo-200 shrink-0">
+            <Sparkles className="w-4 h-4 text-white animate-pulse" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-extrabold text-slate-900 tracking-tight">
-                Kinetix
-              </h1>
-              
-              {/* Project Switcher Select Dropdown */}
-              <div className="relative flex items-center">
-                <select
-                  value={currentProjectId}
-                  onChange={(e) => {
-                    if (e.target.value === 'NAV_PROJECTS') {
-                      setActiveView('projects');
-                    } else {
-                      switchProject(e.target.value);
-                    }
-                  }}
-                  className="bg-indigo-50 text-indigo-900 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-indigo-200 focus:outline-hidden cursor-pointer shadow-2xs hover:bg-indigo-100 transition-colors"
-                >
-                  {projects.map(p => (
-                    <option key={p.id} value={p.id}>
-                      [{p.code}] {p.name}
-                    </option>
-                  ))}
-                  <option value="NAV_PROJECTS">+ Manage / Create Projects...</option>
-                </select>
-              </div>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium truncate">
-              Active: <strong>{currentProject?.name}</strong> ({currentProject?.members?.length || 0} Members)
-            </p>
+
+          <div className="flex items-center gap-2">
+            <h1 className="text-base font-extrabold text-slate-900 tracking-tight">
+              Kinetix
+            </h1>
+
+            <span className="text-slate-300 font-light">|</span>
+
+            {/* Project Switcher Select Dropdown */}
+            <select
+              value={currentProjectId}
+              onChange={(e) => {
+                if (e.target.value === 'NAV_PROJECTS') {
+                  setActiveView('projects');
+                } else {
+                  switchProject(e.target.value);
+                }
+              }}
+              className="bg-indigo-50/80 hover:bg-indigo-100 text-indigo-950 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-indigo-200/80 focus:outline-hidden cursor-pointer shadow-2xs transition-colors"
+            >
+              {projects.map(p => (
+                <option key={p.id} value={p.id}>
+                  [{p.code}] {p.name}
+                </option>
+              ))}
+              <option value="NAV_PROJECTS">+ Manage / Create Projects...</option>
+            </select>
           </div>
         </div>
 
-        {/* Global Search Bar */}
-        <div className="relative flex-1 max-w-sm mx-2 hidden md:block">
+        {/* Search Bar */}
+        <div className="relative flex-1 max-w-sm mx-2 hidden sm:block">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             placeholder="Search milestones, tags, owners..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100/80 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
+            className="w-full bg-slate-100/70 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-xl border border-slate-200/80 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
           />
           {searchQuery && (
             <button 
@@ -200,15 +183,15 @@ export default function Header() {
           )}
         </div>
 
-        {/* STREAMLINED ACTION BUTTONS */}
+        {/* Action Controls */}
         <div className="flex items-center gap-2">
           
-          {/* Conflict Reschedule Warning Pill */}
+          {/* Conflict Reschedule Pill */}
           {dependencyConflicts.length > 0 && (
             <button
               onClick={autoFixDependencies}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 transition-all shadow-2xs animate-bounce"
-              title="Automatically push dependent dates forward to resolve overlaps"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-extrabold rounded-lg bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 transition-all shadow-2xs animate-bounce"
+              title="Automatically resolve date overlaps"
             >
               <Wand2 className="w-3.5 h-3.5 text-amber-600" />
               <span>Fix ({dependencyConflicts.length})</span>
@@ -226,15 +209,15 @@ export default function Header() {
             <span>Kinetix IQ</span>
           </button>
 
-          {/* GROUP 1: + CREATE NEW DROPDOWN MENU */}
+          {/* + CREATE DROPDOWN MENU */}
           <div className="relative" ref={createMenuRef}>
             <button
               onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-extrabold rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xs transition-all active:scale-95"
+              className="flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all active:scale-95"
             >
               <Plus className="w-4 h-4" />
-              <span>+ Create</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCreateMenuOpen ? 'rotate-180' : ''}`} />
+              <span>Create</span>
+              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isCreateMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isCreateMenuOpen && (
@@ -275,15 +258,16 @@ export default function Header() {
             )}
           </div>
 
-          {/* GROUP 2: TOOLS & INTEGRATIONS DROPDOWN MENU */}
+          {/* WORKSPACE TOOLS DROPDOWN */}
           <div className="relative" ref={toolsMenuRef}>
             <button
               onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs"
-              title="Import, Export & Project Tools"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs"
+              title="Tools & Integrations"
             >
               <UploadCloud className="w-3.5 h-3.5 text-slate-600" />
-              <span>Tools ▾</span>
+              <span>Tools</span>
+              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isToolsMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isToolsMenuOpen && (
@@ -294,7 +278,7 @@ export default function Header() {
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors"
                   >
                     <UploadCloud className="w-4 h-4 text-emerald-600" />
-                    <span>Integration Hub (Excel, Jira, MS Project)</span>
+                    <span>Data Sync & Integrations</span>
                   </button>
                   <button
                     onClick={() => { exportMilestonesToCSV(milestones); setIsToolsMenuOpen(false); }}
@@ -326,171 +310,189 @@ export default function Header() {
           </div>
 
         </div>
-
       </div>
 
-      {/* ZERO HORIZONTAL SCROLL GROUPED NAVIGATION BAR */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between border-t border-slate-200/80 py-1.5">
-        <div className="flex items-center gap-2 flex-wrap w-full" ref={navMenuRef}>
-          
-          {/* Active View Title Badge Indicator */}
-          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-slate-900 text-white rounded-lg text-xs font-extrabold shadow-2xs mr-2">
-            <currentNav.icon className="w-3.5 h-3.5 text-indigo-300" />
-            <span>{currentNav.label}</span>
-          </div>
-
-          {/* Group 1: Execution & Roadmaps Dropdown */}
-          {navGroups.map((group) => {
-            const GroupIcon = group.icon;
-            const hasActiveChild = group.items.some(i => i.id === activeView);
-            const isOpen = openNavGroup === group.id;
+      {/* ROW 2: UNIFIED NAVIGATION & INLINE FILTERS BAR */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between gap-3">
+        
+        {/* Sleek Segmented Navigation Pills */}
+        <nav className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
+          {primaryTabs.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeView === item.id;
 
             return (
-              <div key={group.id} className="relative">
-                <button
-                  id={`nav-group-${group.id}`}
-                  onClick={() => setOpenNavGroup(isOpen ? null : group.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
-                    hasActiveChild 
-                      ? 'bg-indigo-600 text-white border-indigo-700 shadow-2xs font-extrabold' 
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  <GroupIcon className={`w-3.5 h-3.5 ${hasActiveChild ? 'text-white' : 'text-indigo-600'}`} />
-                  <span>{group.label}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {/* Dropdown Menu */}
-                {isOpen && (
-                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up text-xs font-medium divide-y divide-slate-100">
-                    {group.items.map((item) => {
-                      const ItemIcon = item.icon;
-                      const isItemSelected = activeView === item.id;
-
-                      return (
-                        <button
-                          key={item.id}
-                          id={`nav-${item.id}`}
-                          onClick={() => {
-                            setActiveView(item.id);
-                            setOpenNavGroup(null);
-                          }}
-                          className={`w-full text-left px-3.5 py-2 flex items-start gap-2.5 transition-colors ${
-                            isItemSelected ? 'bg-indigo-50/90 text-indigo-900 font-extrabold' : 'hover:bg-slate-50 text-slate-800'
-                          }`}
-                        >
-                          <ItemIcon className={`w-4 h-4 shrink-0 mt-0.5 ${isItemSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className="truncate">{item.label}</span>
-                              {isItemSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
-                            </div>
-                            <span className="text-[10px] text-slate-400 font-normal block truncate">{item.desc}</span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+              <button
+                key={item.id}
+                id={item.targetId || `nav-${item.id}`}
+                onClick={() => setActiveView(item.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-slate-900 text-white font-extrabold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <span>{item.label}</span>
+                {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
                 )}
-              </div>
+              </button>
             );
           })}
 
-          {/* Standalone Button: Data Sync & Integrations */}
-          <button
-            id="nav-integrations"
-            onClick={() => setActiveView('integrations')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all border ${
-              activeView === 'integrations'
-                ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs font-extrabold'
-                : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-            }`}
-          >
-            <UploadCloud className={`w-3.5 h-3.5 ${activeView === 'integrations' ? 'text-white' : 'text-emerald-600'}`} />
-            <span>Data Sync & Integrations</span>
-          </button>
-
-        </div>
-      </div>
-
-      {/* Filter Toolbar Bar */}
-      <div className="bg-slate-100/70 border-t border-slate-200/80 px-4 sm:px-6 py-1.5">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
-          
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Filter by:</span>
-
-            {/* Filter Goal */}
-            <select
-              value={filterGoal}
-              onChange={(e) => setFilterGoal(e.target.value)}
-              className="bg-white text-slate-800 border border-slate-200 rounded-md px-2 py-0.5 text-xs focus:outline-none focus:border-indigo-500 shadow-2xs font-medium"
+          {/* 'More Views' Dropdown Menu */}
+          <div className="relative" ref={moreViewsRef}>
+            <button
+              onClick={() => setIsMoreViewsOpen(!isMoreViewsOpen)}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
+                isSecondaryActive 
+                  ? 'bg-slate-900 text-white font-extrabold shadow-2xs' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
+              }`}
             >
-              <option value="all">All Goals</option>
-              {goals.map(g => (
-                <option key={g.id} value={g.id}>{g.title}</option>
-              ))}
-            </select>
+              <span>More Views</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMoreViewsOpen ? 'rotate-180' : ''}`} />
+            </button>
 
-            {/* Filter Priority */}
-            <select
-              value={filterPriority}
-              onChange={(e) => setFilterPriority(e.target.value)}
-              className="bg-white text-slate-800 border border-slate-200 rounded-md px-2 py-0.5 text-xs focus:outline-none focus:border-indigo-500 shadow-2xs font-medium"
-            >
-              <option value="all">All Priorities</option>
-              <option value="P0">P0 - Critical</option>
-              <option value="P1">P1 - High</option>
-              <option value="P2">P2 - Medium</option>
-              <option value="P3">P3 - Low</option>
-            </select>
+            {isMoreViewsOpen && (
+              <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up font-medium text-xs divide-y divide-slate-100">
+                {secondaryTabs.map((item) => {
+                  const Icon = item.icon;
+                  const isSelected = activeView === item.id;
 
-            {/* Filter Health */}
-            <select
-              value={filterHealth}
-              onChange={(e) => setFilterHealth(e.target.value)}
-              className="bg-white text-slate-800 border border-slate-200 rounded-md px-2 py-0.5 text-xs focus:outline-none focus:border-indigo-500 shadow-2xs font-medium"
-            >
-              <option value="all">All Health</option>
-              <option value="On Track">On Track</option>
-              <option value="At Risk">At Risk</option>
-              <option value="Delayed">Delayed</option>
-            </select>
-
-            {/* Filter Owner */}
-            <select
-              value={filterOwner}
-              onChange={(e) => setFilterOwner(e.target.value)}
-              className="bg-white text-slate-800 border border-slate-200 rounded-md px-2 py-0.5 text-xs focus:outline-none focus:border-indigo-500 shadow-2xs font-medium"
-            >
-              <option value="all">All Owners</option>
-              {team.map(t => (
-                <option key={t.id} value={t.name}>{t.name}</option>
-              ))}
-            </select>
-
-            {(filterGoal !== 'all' || filterPriority !== 'all' || filterHealth !== 'all' || filterOwner !== 'all') && (
-              <button
-                onClick={() => {
-                  setFilterGoal('all');
-                  setFilterPriority('all');
-                  setFilterHealth('all');
-                  setFilterOwner('all');
-                }}
-                className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold underline px-1"
-              >
-                Reset Filters
-              </button>
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveView(item.id);
+                        setIsMoreViewsOpen(false);
+                      }}
+                      className={`w-full text-left px-3.5 py-2 flex items-start gap-2.5 transition-colors ${
+                        isSelected ? 'bg-indigo-50 text-indigo-900 font-extrabold' : 'hover:bg-slate-50 text-slate-800'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 mt-0.5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="truncate">{item.label}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
+                        </div>
+                        <span className="text-[10px] text-slate-400 font-normal block truncate">{item.desc}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
 
-          <div className="text-[11px] text-slate-500 font-medium">
-            Showing <strong className="text-slate-800">{milestones.length}</strong> milestones
-          </div>
+        </nav>
 
+        {/* INLINE COMPACT FILTER POPOVER TOGGLE */}
+        <div className="relative" ref={filterRef}>
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+              activeFiltersCount > 0 
+                ? 'bg-indigo-50 text-indigo-700 border-indigo-300 font-extrabold' 
+                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Filter className={`w-3.5 h-3.5 ${activeFiltersCount > 0 ? 'text-indigo-600' : 'text-slate-500'}`} />
+            <span>Filter</span>
+            {activeFiltersCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold flex items-center justify-center">
+                {activeFiltersCount}
+              </span>
+            )}
+            <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {/* Filter Popover Dropdown */}
+          {isFilterOpen && (
+            <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-4 z-50 animate-scale-up text-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span className="font-extrabold text-slate-900 text-xs">Filter Roadmap</span>
+                {activeFiltersCount > 0 && (
+                  <button
+                    onClick={() => {
+                      setFilterGoal('all');
+                      setFilterPriority('all');
+                      setFilterHealth('all');
+                      setFilterOwner('all');
+                    }}
+                    className="text-[11px] text-indigo-600 font-bold hover:underline"
+                  >
+                    Reset All
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-2.5">
+                <div>
+                  <label className="block text-slate-600 font-bold mb-1">Strategic Goal</label>
+                  <select
+                    value={filterGoal}
+                    onChange={(e) => setFilterGoal(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 text-xs font-medium"
+                  >
+                    <option value="all">All Goals</option>
+                    {goals.map(g => (
+                      <option key={g.id} value={g.id}>{g.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-600 font-bold mb-1">Priority Level</label>
+                  <select
+                    value={filterPriority}
+                    onChange={(e) => setFilterPriority(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 text-xs font-medium"
+                  >
+                    <option value="all">All Priorities</option>
+                    <option value="P0">P0 - Critical</option>
+                    <option value="P1">P1 - High</option>
+                    <option value="P2">P2 - Medium</option>
+                    <option value="P3">P3 - Low</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-600 font-bold mb-1">Health Status</label>
+                  <select
+                    value={filterHealth}
+                    onChange={(e) => setFilterHealth(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 text-xs font-medium"
+                  >
+                    <option value="all">All Health</option>
+                    <option value="On Track">On Track</option>
+                    <option value="At Risk">At Risk</option>
+                    <option value="Delayed">Delayed</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-600 font-bold mb-1">Owner Lead</label>
+                  <select
+                    value={filterOwner}
+                    onChange={(e) => setFilterOwner(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 text-xs font-medium"
+                  >
+                    <option value="all">All Owners</option>
+                    {team.map(t => (
+                      <option key={t.id} value={t.name}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
       </div>
+
     </header>
   );
 }
