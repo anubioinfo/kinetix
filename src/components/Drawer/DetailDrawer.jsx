@@ -80,11 +80,13 @@ export default function DetailDrawer() {
   const handleEditClick = () => {
     setEditingMilestone(milestone);
     setIsMilestoneModalOpen(true);
+    setSelectedMilestoneId(null);
   };
 
   const handleDeleteClick = () => {
     if (confirm(`Are you sure you want to delete milestone "${milestone.title}"?`)) {
       deleteMilestone(milestone.id);
+      setSelectedMilestoneId(null);
     }
   };
 
