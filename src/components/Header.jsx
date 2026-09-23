@@ -20,7 +20,10 @@ import {
   Sparkles,
   Layers,
   HelpCircle,
-  UploadCloud
+  UploadCloud,
+  FolderKanban,
+  ChevronDown,
+  FolderPlus
 } from 'lucide-react';
 import { exportMilestonesToCSV, exportToJSON } from '../utils/exportUtils';
 
@@ -52,11 +55,16 @@ export default function Header() {
     resetDemoData,
     startTour,
     openAICopilot,
-    openIntegrationHub
+    openIntegrationHub,
+    projects,
+    currentProjectId,
+    currentProject,
+    switchProject
   } = useProject();
 
   const navItems = [
     { id: 'gantt', label: 'Roadmap & Gantt', icon: Calendar },
+    { id: 'projects', label: 'Projects Directory', icon: FolderKanban },
     { id: 'portfolio', label: 'Portfolio & Release Trains', icon: Layers },
     { id: 'priority', label: 'Priority Matrix', icon: Grid },
     { id: 'dependencies', label: 'Dependency Graph', icon: GitCommit },
@@ -88,11 +96,30 @@ export default function Header() {
               <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
                 Kinetix Roadmap
               </h1>
-              <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
-                Enterprise v3.0
-              </span>
+              
+              {/* Project Switcher Select Dropdown */}
+              <div className="relative flex items-center">
+                <select
+                  value={currentProjectId}
+                  onChange={(e) => {
+                    if (e.target.value === 'NAV_PROJECTS') {
+                      setActiveView('projects');
+                    } else {
+                      switchProject(e.target.value);
+                    }
+                  }}
+                  className="bg-indigo-50 text-indigo-900 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-indigo-200 focus:outline-hidden cursor-pointer shadow-2xs hover:bg-indigo-100 transition-colors"
+                >
+                  {projects.map(p => (
+                    <option key={p.id} value={p.id}>
+                      [{p.code}] {p.name}
+                    </option>
+                  ))}
+                  <option value="NAV_PROJECTS">+ Manage / Create Projects...</option>
+                </select>
+              </div>
             </div>
-            <p className="text-xs text-slate-500 font-medium">High-Velocity Agile Milestone Execution Engine</p>
+            <p className="text-xs text-slate-500 font-medium">Active: <strong>{currentProject?.name}</strong> ({currentProject?.members?.length || 0} Members)</p>
           </div>
         </div>
 

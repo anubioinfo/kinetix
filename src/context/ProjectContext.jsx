@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { initialGoals, initialMilestones, initialIdeas, initialTeam, initialReleases, initialPortfolios } from '../data/mockData.js';
+import { initialGoals, initialMilestones, initialIdeas, initialTeam, initialReleases, initialPortfolios, initialProjects } from '../data/mockData.js';
 import { detectDependencyConflicts, autoRescheduleDependencies } from '../utils/dependencyUtils.js';
 
 const ProjectContext = createContext();
@@ -26,6 +26,10 @@ export function ProjectProvider({ children }) {
   const [team, setTeam] = useState(initialTeam);
   const [portfolios, setPortfolios] = useState(initialPortfolios);
   const [releases, setReleases] = useState(initialReleases);
+
+  // Multi-Project & User Access Control State
+  const [projects, setProjects] = useState(initialProjects);
+  const [currentProjectId, setCurrentProjectId] = useState('proj-1');
 
   // UI State
   const [activeView, setActiveView] = useState('gantt'); // 'gantt' | 'priority' | 'dependencies' | 'strategy' | 'kanban' | 'ideas' | 'resource' | 'analytics'
@@ -252,6 +256,56 @@ export function ProjectProvider({ children }) {
     return matchesSearch && matchesGoal && matchesPriority && matchesHealth && matchesOwner;
   });
 
+  const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
+
+  const switchProject = (projId) => {
+    setCurrentProjectId(projId);
+    const targetProj = projects.find(p => p.id === projId);
+    if (!targetProj) return;
+
+    if (projId === 'proj-1') {
+      setGoals(initialGoals);
+      setMilestones(initialMilestones);
+      setIdeas(initialIdeas);
+    } else if (projId === 'proj-2') {
+      setGoals([
+        { id: 'g-pay-1', title: 'PCI-DSS Payment Gateway Kernel', category: 'Backend Security', targetQuarter: 'Q4 2026', progress: 40, color: '#3b82f6', owner: 'Jitendra', description: 'Bank-grade credit card tokenizer & webhook dispatch engine.' }
+      ]);
+      setMilestones([
+        { id: 'ms-pay-1', title: 'Payment Tokenizer API', description: 'PCI-DSS compliant credit card tokenization service.', goalId: 'g-pay-1', startDate: '2026-09-10', dueDate: '2026-10-15', status: 'In Progress', health: 'On Track', priority: 'P0', impact: 9, effort: 5, owner: 'Jitendra', progress: 45, dependencies: [], features: [{ id: 'f-pay-1', title: 'AES-256 Vault Encryption', completed: true, points: 5 }] }
+      ]);
+      setIdeas([]);
+    } else if (projId === 'proj-3') {
+      setGoals([
+        { id: 'g-hlth-1', title: 'BLE Sensor & Clinical Transcribe', category: 'Mobile & IoT', targetQuarter: 'Q4 2026', progress: 20, color: '#8b5cf6', owner: 'Akshay', description: 'BLE heart rate monitoring & symptom logging.' }
+      ]);
+      setMilestones([
+        { id: 'ms-hlth-1', title: 'BLE Sensor Connection', description: 'Bluetooth Low Energy pairing with medical pulse oximeters.', goalId: 'g-hlth-1', startDate: '2026-09-15', dueDate: '2026-10-30', status: 'In Progress', health: 'On Track', priority: 'P0', impact: 8, effort: 4, owner: 'Akshay', progress: 30, dependencies: [], features: [{ id: 'f-hlth-1', title: 'BLE Device Handshake API', completed: true, points: 3 }] }
+      ]);
+      setIdeas([]);
+    }
+  };
+
+  const addProject = (newProj, isBlank = true) => {
+    setProjects(prev => [...prev, newProj]);
+    setCurrentProjectId(newProj.id);
+
+    if (isBlank) {
+      setGoals([]);
+      setMilestones([]);
+      setIdeas([]);
+    }
+  };
+
+  const updateProjectAccess = (projId, updatedMembers) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id === projId) {
+        return { ...p, members: updatedMembers };
+      }
+      return p;
+    }));
+  };
+
   return (
     <ProjectContext.Provider value={{
       goals, setGoals, addGoal, updateGoal, deleteGoal,
@@ -259,6 +313,7 @@ export function ProjectProvider({ children }) {
       filteredMilestones,
       ideas, setIdeas, addIdea, voteIdea, promoteIdeaToMilestone,
       team, portfolios, setPortfolios, releases, setReleases,
+      projects, currentProjectId, currentProject, switchProject, addProject, updateProjectAccess,
       activeView, setActiveView,
       searchQuery, setSearchQuery,
       filterGoal, setFilterGoal,

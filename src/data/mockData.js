@@ -385,3 +385,52 @@ export const initialReleases = [
     description: 'Workspace sharing, automated QA security pass, & AI voice note transcription.'
   }
 ];
+
+export const initialProjects = [
+  {
+    id: 'proj-1',
+    name: 'KeepNote Ecosystem',
+    code: 'KEEP',
+    category: 'Product Suite',
+    description: 'Sub-50ms Cloud Note Synchronization, Rich Web Editor, & Native Mobile Apps',
+    owner: 'Anurag',
+    createdAt: '2026-09-01',
+    members: [
+      { userId: 'u1', name: 'Anurag', email: 'anurag@keepnote.com', role: 'Owner', avatar: 'AN', color: '#6366f1' },
+      { userId: 'u2', name: 'Jitendra', email: 'jitendra@keepnote.com', role: 'Admin', avatar: 'JD', color: '#3b82f6' },
+      { userId: 'u3', name: 'Nitin', email: 'nitin@keepnote.com', role: 'Editor', avatar: 'ND', color: '#06b6d4' },
+      { userId: 'u4', name: 'Ram', email: 'ram@keepnote.com', role: 'Editor', avatar: 'RM', color: '#ec4899' },
+      { userId: 'u5', name: 'Akshay', email: 'akshay@keepnote.com', role: 'Editor', avatar: 'AK', color: '#8b5cf6' },
+      { userId: 'u6', name: 'Dinesh', email: 'dinesh@keepnote.com', role: 'Viewer', avatar: 'DE', color: '#10b981' },
+      { userId: 'u7', name: 'Shyam', email: 'shyam@keepnote.com', role: 'Viewer', avatar: 'SH', color: '#f59e0b' }
+    ]
+  },
+  {
+    id: 'proj-2',
+    name: 'Fintech Payment Gateway Engine',
+    code: 'PAY',
+    category: 'Financial Infrastructure',
+    description: 'PCI-DSS compliant payment processing engine, webhook dispatch, & instant refund processing.',
+    owner: 'Jitendra',
+    createdAt: '2026-09-10',
+    members: [
+      { userId: 'u2', name: 'Jitendra', email: 'jitendra@keepnote.com', role: 'Owner', avatar: 'JD', color: '#3b82f6' },
+      { userId: 'u1', name: 'Anurag', email: 'anurag@keepnote.com', role: 'Admin', avatar: 'AN', color: '#6366f1' },
+      { userId: 'u7', name: 'Shyam', email: 'shyam@keepnote.com', role: 'Editor', avatar: 'SH', color: '#f59e0b' }
+    ]
+  },
+  {
+    id: 'proj-3',
+    name: 'HealthTrack AI Mobile App',
+    code: 'HLTH',
+    category: 'Healthcare & IoT',
+    description: 'BLE heart rate monitoring, symptom tracking, & AI-assisted clinical report generation.',
+    owner: 'Akshay',
+    createdAt: '2026-09-15',
+    members: [
+      { userId: 'u5', name: 'Akshay', email: 'akshay@keepnote.com', role: 'Owner', avatar: 'AK', color: '#8b5cf6' },
+      { userId: 'u4', name: 'Ram', email: 'ram@keepnote.com', role: 'Editor', avatar: 'RM', color: '#ec4899' },
+      { userId: 'u6', name: 'Dinesh', email: 'dinesh@keepnote.com', role: 'Viewer', avatar: 'DE', color: '#10b981' }
+    ]
+  }
+];

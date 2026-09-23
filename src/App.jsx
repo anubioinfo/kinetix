@@ -11,6 +11,7 @@ import ResourceView from './views/ResourceView';
 import AnalyticsView from './views/AnalyticsView';
 import IntegrationHubView from './views/IntegrationHubView';
 import PortfolioView from './views/PortfolioView';
+import ProjectsView from './views/ProjectsView';
 
 import MilestoneModal from './components/MilestoneModal';
 import GoalModal from './components/GoalModal';
@@ -27,6 +28,7 @@ function MainContent() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {activeView === 'gantt' && <GanttView />}
+      {activeView === 'projects' && <ProjectsView />}
       {activeView === 'portfolio' && <PortfolioView />}
       {activeView === 'priority' && <PriorityMatrixView />}
       {activeView === 'dependencies' && <DependencyGraphView />}
