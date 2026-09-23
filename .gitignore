@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation & Requirements
+FUNCTIONAL_REQUIREMENTS_V1.md
+
