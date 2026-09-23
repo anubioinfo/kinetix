@@ -304,8 +304,84 @@ export const initialIdeas = [
   }
 ];
 
+export const initialPortfolios = [
+  {
+    id: 'port-1',
+    name: 'KeepNote Core Platform',
+    code: 'CORE',
+    color: '#6366f1',
+    lead: 'Anurag',
+    budget: '$450,000',
+    status: 'On Track',
+    description: 'Cloud storage, sub-50ms sync engine, web rich text editor, & global CDN hosting.'
+  },
+  {
+    id: 'port-2',
+    name: 'Mobile & Push Ecosystem',
+    code: 'MOBILE',
+    color: '#ec4899',
+    lead: 'Akshay',
+    budget: '$320,000',
+    status: 'On Track',
+    description: 'Native iOS & Android mobile apps, smart push alerts, & geo-fenced reminders.'
+  },
+  {
+    id: 'port-3',
+    name: 'Enterprise & Collaboration',
+    code: 'ENT',
+    color: '#f59e0b',
+    lead: 'Jitendra',
+    budget: '$280,000',
+    status: 'At Risk',
+    description: 'Workspace sharing, real-time live co-editing, & automated QA security pass.'
+  },
+  {
+    id: 'port-4',
+    name: 'AI & Intelligence Stream',
+    code: 'AI',
+    color: '#8b5cf6',
+    lead: 'Ram',
+    budget: '$380,000',
+    status: 'On Track',
+    description: 'AI voice note transcription, natural language search, & Kinetix IQ Assistant.'
+  }
+];
+
 export const initialReleases = [
-  { id: 'rel-1', name: 'KeepNote v1.0 Core Engine & Web Launch', date: '2026-09-25', status: 'Completed' },
-  { id: 'rel-2', name: 'KeepNote v1.5 Mobile App & Push Reminders', date: '2026-10-25', status: 'In Progress' },
-  { id: 'rel-3', name: 'KeepNote v2.0 Workspace Sharing & AI Search', date: '2026-11-20', status: 'Planning' }
+  { 
+    id: 'rel-1', 
+    name: 'ART 2026.Q3 - Cloud & Web Launch', 
+    codeName: 'Train-Alpha (v1.0)',
+    portfolioId: 'port-1',
+    date: '2026-09-25', 
+    status: 'Ready for Launch',
+    readinessScore: 98,
+    lead: 'Anurag',
+    milestoneIds: ['ms-1', 'ms-2', 'ms-3'],
+    description: 'Sub-50ms sync engine, WYSIWYG Web Rich Editor, & Global Hosting Infrastructure.'
+  },
+  { 
+    id: 'rel-2', 
+    name: 'ART 2026.Q4 - Cross-Platform Mobile & Push', 
+    codeName: 'Train-Beta (v1.5)',
+    portfolioId: 'port-2',
+    date: '2026-10-25', 
+    status: 'In Progress',
+    readinessScore: 78,
+    lead: 'Akshay',
+    milestoneIds: ['ms-4', 'ms-5'],
+    description: 'Native iOS & Android apps with offline editing & smart push alert engine.'
+  },
+  { 
+    id: 'rel-3', 
+    name: 'ART 2027.Q1 - AI Voice Transcribe & Enterprise', 
+    codeName: 'Train-Gamma (v2.0)',
+    portfolioId: 'port-4',
+    date: '2026-11-20', 
+    status: 'Planning',
+    readinessScore: 45,
+    lead: 'Jitendra',
+    milestoneIds: ['ms-6', 'ms-7', 'ms-8'],
+    description: 'Workspace sharing, automated QA security pass, & AI voice note transcription.'
+  }
 ];

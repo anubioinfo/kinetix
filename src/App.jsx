@@ -9,6 +9,8 @@ import KanbanView from './views/KanbanView';
 import IdeasView from './views/IdeasView';
 import ResourceView from './views/ResourceView';
 import AnalyticsView from './views/AnalyticsView';
+import IntegrationHubView from './views/IntegrationHubView';
+import PortfolioView from './views/PortfolioView';
 
 import MilestoneModal from './components/MilestoneModal';
 import GoalModal from './components/GoalModal';
@@ -16,6 +18,8 @@ import IdeaModal from './components/IdeaModal';
 import DetailDrawer from './components/Drawer/DetailDrawer';
 import OnboardingTour from './components/OnboardingTour';
 import DeveloperProfileModal from './components/DeveloperProfileModal';
+import AICopilotDrawer from './components/AICopilotDrawer';
+import IntegrationHubModal from './components/IntegrationHubModal';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -23,6 +27,7 @@ function MainContent() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {activeView === 'gantt' && <GanttView />}
+      {activeView === 'portfolio' && <PortfolioView />}
       {activeView === 'priority' && <PriorityMatrixView />}
       {activeView === 'dependencies' && <DependencyGraphView />}
       {activeView === 'strategy' && <StrategyView />}
@@ -30,23 +35,34 @@ function MainContent() {
       {activeView === 'ideas' && <IdeasView />}
       {activeView === 'resource' && <ResourceView />}
       {activeView === 'analytics' && <AnalyticsView />}
+      {activeView === 'integrations' && <IntegrationHubView />}
     </main>
+  );
+}
+
+function AppContent() {
+  const { isAICopilotOpen, closeAICopilot, isIntegrationModalOpen, closeIntegrationHub } = useProject();
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+      <Header />
+      <MainContent />
+      <MilestoneModal />
+      <GoalModal />
+      <IdeaModal />
+      <DetailDrawer />
+      <DeveloperProfileModal />
+      <AICopilotDrawer isOpen={isAICopilotOpen} onClose={closeAICopilot} />
+      <IntegrationHubModal isOpen={isIntegrationModalOpen} onClose={closeIntegrationHub} />
+      <OnboardingTour />
+    </div>
   );
 }
 
 export default function App() {
   return (
     <ProjectProvider>
-      <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-        <Header />
-        <MainContent />
-        <MilestoneModal />
-        <GoalModal />
-        <IdeaModal />
-        <DetailDrawer />
-        <DeveloperProfileModal />
-        <OnboardingTour />
-      </div>
+      <AppContent />
     </ProjectProvider>
   );
 }

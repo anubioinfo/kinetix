@@ -19,7 +19,8 @@ import {
   Moon,
   Sparkles,
   Layers,
-  HelpCircle
+  HelpCircle,
+  UploadCloud
 } from 'lucide-react';
 import { exportMilestonesToCSV, exportToJSON } from '../utils/exportUtils';
 
@@ -49,11 +50,14 @@ export default function Header() {
     dependencyConflicts,
     autoFixDependencies,
     resetDemoData,
-    startTour
+    startTour,
+    openAICopilot,
+    openIntegrationHub
   } = useProject();
 
   const navItems = [
     { id: 'gantt', label: 'Roadmap & Gantt', icon: Calendar },
+    { id: 'portfolio', label: 'Portfolio & Release Trains', icon: Layers },
     { id: 'priority', label: 'Priority Matrix', icon: Grid },
     { id: 'dependencies', label: 'Dependency Graph', icon: GitCommit },
     { id: 'strategy', label: 'Strategy Hub', icon: Target },
@@ -61,6 +65,7 @@ export default function Header() {
     { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb },
     { id: 'resource', label: 'Team Capacity', icon: Users },
     { id: 'analytics', label: 'Executive Analytics', icon: BarChart3 },
+    { id: 'integrations', label: 'Universal Integration', icon: UploadCloud },
   ];
 
   const handleCreateMilestone = () => {
@@ -125,6 +130,17 @@ export default function Header() {
             </button>
           )}
 
+          {/* Kinetix IQ AI Button */}
+          <button
+            id="btn-kinetix-iq"
+            onClick={openAICopilot}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-bold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white hover:opacity-95 shadow-md shadow-purple-200 transition-all transform active:scale-95 border border-purple-400/30"
+            title="Launch Kinetix IQ Assistant & Milestone Generator"
+          >
+            <Sparkles className="w-4 h-4 text-purple-200 animate-pulse" />
+            <span>Kinetix IQ</span>
+          </button>
+
           {/* New Milestone Button */}
           <button
             onClick={handleCreateMilestone}
@@ -152,12 +168,23 @@ export default function Header() {
             + Idea
           </button>
 
+          {/* Universal Integration Hub */}
+          <button
+            id="btn-integration-hub"
+            onClick={openIntegrationHub}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-all shadow-xs"
+            title="Universal Integration Hub (Import/Export Excel, CSV, Jira, MS Project)"
+          >
+            <UploadCloud className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Import / Integration Hub</span>
+          </button>
+
           {/* Export CSV */}
           <div className="relative group">
             <button
               onClick={() => exportMilestonesToCSV(milestones)}
               className="p-2 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-900 transition-all"
-              title="Export CSV"
+              title="Quick Export CSV"
             >
               <Download className="w-4 h-4" />
             </button>

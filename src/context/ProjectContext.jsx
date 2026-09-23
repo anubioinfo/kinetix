@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { initialGoals, initialMilestones, initialIdeas, initialTeam, initialReleases } from '../data/mockData.js';
+import { initialGoals, initialMilestones, initialIdeas, initialTeam, initialReleases, initialPortfolios } from '../data/mockData.js';
 import { detectDependencyConflicts, autoRescheduleDependencies } from '../utils/dependencyUtils.js';
 
 const ProjectContext = createContext();
@@ -24,6 +24,7 @@ export function ProjectProvider({ children }) {
   });
 
   const [team, setTeam] = useState(initialTeam);
+  const [portfolios, setPortfolios] = useState(initialPortfolios);
   const [releases, setReleases] = useState(initialReleases);
 
   // UI State
@@ -46,6 +47,17 @@ export function ProjectProvider({ children }) {
   // Developer / Resource Profile Modal State
   const [selectedDeveloperName, setSelectedDeveloperName] = useState(null);
   const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
+
+  // Integration Hub Modal State
+  const [isIntegrationModalOpen, setIsIntegrationModalOpen] = useState(false);
+  const openIntegrationHub = () => setIsIntegrationModalOpen(true);
+  const closeIntegrationHub = () => setIsIntegrationModalOpen(false);
+
+  // Kinetix IQ Drawer State
+  const [isAICopilotOpen, setIsAICopilotOpen] = useState(false);
+
+  const openAICopilot = () => setIsAICopilotOpen(true);
+  const closeAICopilot = () => setIsAICopilotOpen(false);
 
   const openDeveloperProfile = (name) => {
     if (!name) return;
@@ -246,7 +258,7 @@ export function ProjectProvider({ children }) {
       milestones, setMilestones, addMilestone, updateMilestone, deleteMilestone,
       filteredMilestones,
       ideas, setIdeas, addIdea, voteIdea, promoteIdeaToMilestone,
-      team, releases,
+      team, portfolios, setPortfolios, releases, setReleases,
       activeView, setActiveView,
       searchQuery, setSearchQuery,
       filterGoal, setFilterGoal,
@@ -262,6 +274,10 @@ export function ProjectProvider({ children }) {
       selectedDeveloperName, setSelectedDeveloperName,
       isDeveloperModalOpen, setIsDeveloperModalOpen,
       openDeveloperProfile, closeDeveloperProfile,
+      isAICopilotOpen, setIsAICopilotOpen,
+      openAICopilot, closeAICopilot,
+      isIntegrationModalOpen, setIsIntegrationModalOpen,
+      openIntegrationHub, closeIntegrationHub,
       darkMode, setDarkMode,
       ganttZoom, setGanttZoom,
       isTourActive, currentTourStep, startTour, endTour, nextTourStep, prevTourStep,
