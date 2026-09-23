@@ -317,3 +317,80 @@ function normalizePriority(p) {
   if (pr.includes('p2') || pr.includes('medium')) return 'P2';
   return 'P3';
 }
+
+// Export Team Roster to CSV
+export function exportTeamToCSV(team, filename = 'kinetix_team_roster.csv') {
+  const headers = ['Name', 'Role', 'CapacityHours', 'AssignedHours', 'TechStack'];
+  const rows = team.map(member => [
+    `"${(member.name || '').replace(/"/g, '""')}"`,
+    `"${(member.role || '').replace(/"/g, '""')}"`,
+    member.capacityHours || 40,
+    member.assignedHours || 0,
+    `"${(member.techStack || []).join(', ')}"`
+  ]);
+
+  const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  downloadBlob(csvContent, filename, 'text/csv');
+}
+
+// Download Team Sample CSV Template
+export function downloadTeamSampleTemplate() {
+  const content = `Name,Role,CapacityHours,AssignedHours,TechStack
+"Anil Kumar","Senior AI/CV Engineer",40,25,"Python, OpenCV, PyTorch, YOLOv8"
+"Rohan Gupta","Cloud DevOps Specialist",40,15,"Docker, Kubernetes, AWS, Terraform"
+"Priya Sharma","Frontend UI/UX Lead",40,30,"React, TailwindCSS, TypeScript, Figma"
+"Vikram Singh","Security & Compliance Auditor",40,20,"SOC2, PCI-DSS, CyberSecurity, OWASP"`;
+  downloadBlob(content, 'kinetix_team_import_template.csv', 'text/csv');
+}
+
+// Parse CSV text to Team Members array
+export function parseCSVToTeamMembers(rawText) {
+  if (!rawText || !rawText.trim()) return [];
+  const lines = rawText.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const firstLine = lines[0];
+  let delimiter = ',';
+  if (firstLine.includes('\t')) delimiter = '\t';
+  else if (firstLine.includes(';')) delimiter = ';';
+
+  const headers = splitCSVLine(firstLine, delimiter).map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
+  const parsedTeam = [];
+
+  const colors = ['#6366f1', '#ec4899', '#8b5cf6', '#10b981', '#f59e0b', '#3b82f6', '#14b8a6'];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = splitCSVLine(line, delimiter).map(v => v.trim().replace(/^"|"$/g, ''));
+    if (values.length === 0) continue;
+
+    const rowObj = {};
+    headers.forEach((h, idx) => {
+      rowObj[h] = values[idx] || '';
+    });
+
+    const name = rowObj['name'] || rowObj['full name'] || rowObj['member'] || `Developer ${i}`;
+    const role = rowObj['role'] || rowObj['title'] || rowObj['position'] || 'Software Engineer';
+    const capacityHours = parseInt(rowObj['capacityhours'] || rowObj['capacity'] || rowObj['hours'] || '40', 10) || 40;
+    const assignedHours = parseInt(rowObj['assignedhours'] || rowObj['assigned'] || rowObj['load'] || '0', 10) || 0;
+    const techStackStr = rowObj['techstack'] || rowObj['skills'] || rowObj['stack'] || 'React, Node.js';
+    const techStack = techStackStr.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+
+    const avatar = name.substring(0, 1).toUpperCase();
+    const color = colors[i % colors.length];
+
+    parsedTeam.push({
+      id: `usr-csv-${Date.now()}-${i}`,
+      name,
+      role,
+      capacityHours,
+      assignedHours,
+      avatar,
+      color,
+      techStack
+    });
+  }
+
+  return parsedTeam;
+}

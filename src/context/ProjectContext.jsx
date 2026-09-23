@@ -408,13 +408,36 @@ export function ProjectProvider({ children }) {
     addActivityLog('Anurag', 'Updated Access', 'project', `Updated team permissions for project #${projId}`);
   };
 
+  const addTeamMember = (newMember) => {
+    const colors = ['#6366f1', '#ec4899', '#8b5cf6', '#10b981', '#f59e0b', '#3b82f6', '#14b8a6'];
+    const created = {
+      id: 'usr-' + Date.now(),
+      name: newMember.name,
+      role: newMember.role || 'Software Engineer',
+      capacityHours: Number(newMember.capacityHours) || 40,
+      assignedHours: Number(newMember.assignedHours) || 0,
+      avatar: (newMember.name || 'U').substring(0, 1).toUpperCase(),
+      color: newMember.color || colors[Math.floor(Math.random() * colors.length)],
+      techStack: Array.isArray(newMember.techStack) ? newMember.techStack : (newMember.techStack || 'React, Node.js').split(/[,;]/).map(s => s.trim()).filter(Boolean)
+    };
+    setTeam(prev => [...prev, created]);
+    addActivityLog('Anurag', 'Added Team Member', 'team', `Added "${created.name}" (${created.role}) to team roster`);
+  };
+
+  const bulkImportTeamMembers = (membersArray) => {
+    if (!Array.isArray(membersArray) || membersArray.length === 0) return;
+    setTeam(prev => [...prev, ...membersArray]);
+    addActivityLog('Anurag', 'CSV Team Import', 'team', `Imported ${membersArray.length} new team members via CSV`);
+  };
+
   return (
     <ProjectContext.Provider value={{
       goals, setGoals, addGoal, updateGoal, deleteGoal,
       milestones, setMilestones, addMilestone, updateMilestone, deleteMilestone,
       filteredMilestones,
       ideas, setIdeas, addIdea, voteIdea, promoteIdeaToMilestone,
-      team, portfolios, setPortfolios, releases, setReleases,
+      team, setTeam, addTeamMember, bulkImportTeamMembers,
+      portfolios, setPortfolios, releases, setReleases,
       projects, currentProjectId, currentProject, switchProject, addProject, updateProjectAccess,
       activeView, setActiveView,
       searchQuery, setSearchQuery,
