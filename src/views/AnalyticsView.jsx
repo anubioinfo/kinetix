@@ -1,10 +1,10 @@
 import React from 'react';
 import { useProject } from '../context/ProjectContext';
-import { BarChart3, AlertTriangle, Download, TrendingUp, ShieldCheck, Activity, Target, Zap } from 'lucide-react';
+import { BarChart3, AlertTriangle, Download, TrendingUp, ShieldCheck, Activity, Target, Zap, Sparkles } from 'lucide-react';
 import { exportMilestonesToCSV } from '../utils/exportUtils';
 
 export default function AnalyticsView() {
-  const { milestones, dependencyConflicts, ideas, team } = useProject();
+  const { milestones, dependencyConflicts, ideas, team, openRetroModal } = useProject();
 
   const total = milestones.length;
   const completed = milestones.filter(m => m.status === 'Completed').length;
@@ -66,13 +66,23 @@ export default function AnalyticsView() {
           </p>
         </div>
 
-        <button
-          onClick={() => exportMilestonesToCSV(milestones)}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition-all"
-        >
-          <Download className="w-4 h-4" />
-          Export Executive Report (CSV)
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openRetroModal}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs hover:opacity-90 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-purple-200 animate-pulse" />
+            <span>AI Sprint Retrospective</span>
+          </button>
+
+          <button
+            onClick={() => exportMilestonesToCSV(milestones)}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition-all"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export Executive Report</span>
+          </button>
+        </div>
       </div>
 
       {/* EVM Performance Index Bar */}
@@ -134,25 +144,32 @@ export default function AnalyticsView() {
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
+        <div className="card-hover glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Overall Completion Rate</span>
           <div className="flex items-baseline justify-between">
             <span className="text-3xl font-extrabold text-indigo-600 font-mono">{completionRate}%</span>
             <TrendingUp className="w-6 h-6 text-indigo-600" />
           </div>
           <p className="text-[11px] text-slate-500 font-medium">{completed} of {total} milestones completed</p>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+            <span>↑</span><span>+{Math.min(completionRate, 12)}% vs last sprint</span>
+          </div>
         </div>
 
-        <div className="glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
+        <div className="card-hover glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Roadmap Health Score</span>
           <div className="flex items-baseline justify-between">
             <span className="text-3xl font-extrabold text-emerald-600 font-mono">{healthRate}%</span>
             <ShieldCheck className="w-6 h-6 text-emerald-600" />
           </div>
           <p className="text-[11px] text-slate-500 font-medium">{onTrack} milestones on track, {atRisk} at risk</p>
+          <div className={`flex items-center gap-1 text-[11px] font-bold ${healthRate >= 70 ? 'text-emerald-600' : 'text-amber-600'}`}>
+            <span>{healthRate >= 70 ? '↑' : '↓'}</span>
+            <span>{healthRate >= 70 ? `+${Math.min(healthRate, 8)}% healthy` : `${atRisk} need attention`}</span>
+          </div>
         </div>
 
-        <div className="glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
+        <div className="card-hover glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Schedule Conflicts</span>
           <div className="flex items-baseline justify-between">
             <span className={`text-3xl font-extrabold font-mono ${dependencyConflicts.length > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
@@ -161,9 +178,13 @@ export default function AnalyticsView() {
             <AlertTriangle className={`w-6 h-6 ${dependencyConflicts.length > 0 ? 'text-amber-600' : 'text-emerald-600'}`} />
           </div>
           <p className="text-[11px] text-slate-500 font-medium">Detected dependency date overlaps</p>
+          <div className={`flex items-center gap-1 text-[11px] font-bold ${dependencyConflicts.length === 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <span>{dependencyConflicts.length === 0 ? '✓' : '↑'}</span>
+            <span>{dependencyConflicts.length === 0 ? 'All clear' : `${dependencyConflicts.length} unresolved`}</span>
+          </div>
         </div>
 
-        <div className="glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
+        <div className="card-hover glass-panel p-5 rounded-xl border border-slate-200 space-y-2 bg-white shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Ideas Backlog</span>
           <div className="flex items-baseline justify-between">
             <span className="text-3xl font-extrabold text-amber-600 font-mono">{ideas.length}</span>

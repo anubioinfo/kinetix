@@ -441,6 +441,15 @@ export function ProjectProvider({ children }) {
   // --- 🕒 Time Travel & Historical Replay State ---
   const [timeTravelDate, setTimeTravelDate] = useState(null);
 
+  // --- 🔮 AI Sprint Retrospective & 🌐 Product Changelog State ---
+  const [isRetroModalOpen, setIsRetroModalOpen] = useState(false);
+  const openRetroModal = () => setIsRetroModalOpen(true);
+  const closeRetroModal = () => setIsRetroModalOpen(false);
+
+  const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
+  const openChangelogModal = () => setIsChangelogModalOpen(true);
+  const closeChangelogModal = () => setIsChangelogModalOpen(false);
+
   // --- 🤖 AI Auto-Scheduler & Velocity Rebalancer ---
   const [isAutoSchedulerOpen, setIsAutoSchedulerOpen] = useState(false);
   const openAutoScheduler = () => setIsAutoSchedulerOpen(true);
@@ -588,7 +597,10 @@ export function ProjectProvider({ children }) {
       // 🕒 Time Travel
       timeTravelDate, setTimeTravelDate,
       // 🤖 AI Auto-Scheduler
-      isAutoSchedulerOpen, openAutoScheduler, closeAutoScheduler, autoScheduleAndRebalance
+      isAutoSchedulerOpen, openAutoScheduler, closeAutoScheduler, autoScheduleAndRebalance,
+      // 🔮 Sprint Retro & 🌐 Changelog Modals
+      isRetroModalOpen, openRetroModal, closeRetroModal,
+      isChangelogModalOpen, openChangelogModal, closeChangelogModal
     }}>
       {children}
     </ProjectContext.Provider>

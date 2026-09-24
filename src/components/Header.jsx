@@ -28,7 +28,8 @@ import {
   X,
   Bell,
   Bot,
-  Clock
+  Clock,
+  Globe
 } from 'lucide-react';
 import { exportMilestonesToCSV } from '../utils/exportUtils';
 
@@ -71,7 +72,10 @@ export default function Header() {
     openAutoScheduler,
     // 🕒 Time Travel
     timeTravelDate,
-    setTimeTravelDate
+    setTimeTravelDate,
+    // 🔮 Retro & 🌐 Changelog Modals
+    openRetroModal,
+    openChangelogModal
   } = useProject();
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -106,6 +110,7 @@ export default function Header() {
 
   // Primary 1-Click Navigation Tabs
   const primaryTabs = [
+    { id: 'getting-started', label: 'Get Started', icon: Sparkles, targetId: 'nav-getting-started' },
     { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-group-execution' },
     { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban' },
     { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority' },
@@ -216,7 +221,7 @@ export default function Header() {
           <button
             onClick={openNotificationDrawer}
             className="relative p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors shadow-2xs"
-            title="Notification Center & Slack/Teams Webhooks"
+            title="Notification Center & Slack/Teams Webhooks" aria-label="Notifications" data-testid="notification-button"
           >
             <Bell className="w-4 h-4 text-slate-700" />
             {unreadCount > 0 && (
@@ -230,8 +235,8 @@ export default function Header() {
           <button
             id="btn-kinetix-iq"
             onClick={openAICopilot}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white hover:opacity-95 shadow-xs transition-all active:scale-95 border border-purple-400/30"
-            title="Launch Kinetix IQ Assistant & Milestone Generator"
+            className="btn-ai-glow flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-xs active:scale-95 border border-purple-400/30"
+            title="Launch Kinetix IQ Assistant & Milestone Generator" aria-label="Kinetix IQ Assistant" data-testid="ai-button"
           >
             <Sparkles className="w-3.5 h-3.5 text-purple-200 animate-pulse" />
             <span>Kinetix IQ</span>
@@ -239,10 +244,7 @@ export default function Header() {
 
           {/* + CREATE DROPDOWN MENU */}
           <div className="relative" ref={createMenuRef}>
-            <button
-              onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all active:scale-95"
-            >
+            <button onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)} aria-haspopup="true" aria-expanded={isCreateMenuOpen} data-testid="create-button" className="flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all active:scale-95">
               <Plus className="w-4 h-4" />
               <span>Create</span>
               <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isCreateMenuOpen ? 'rotate-180' : ''}`} />
@@ -288,11 +290,7 @@ export default function Header() {
 
           {/* WORKSPACE TOOLS DROPDOWN */}
           <div className="relative" ref={toolsMenuRef}>
-            <button
-              onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs"
-              title="Tools & Integrations"
-            >
+            <button onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)} aria-haspopup="true" aria-expanded={isToolsMenuOpen} data-testid="tools-button" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs" title="Tools & Integrations">
               <UploadCloud className="w-3.5 h-3.5 text-slate-600" />
               <span>Tools</span>
               <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isToolsMenuOpen ? 'rotate-180' : ''}`} />
@@ -301,6 +299,20 @@ export default function Header() {
             {isToolsMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up font-medium text-xs divide-y divide-slate-100">
                 <div className="py-1">
+                  <button
+                    onClick={() => { openRetroModal(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-purple-50 text-purple-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
+                    <span>AI Sprint Retrospective</span>
+                  </button>
+                  <button
+                    onClick={() => { openChangelogModal(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-emerald-50 text-emerald-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <span>Product Release Notes</span>
+                  </button>
                   <button
                     onClick={() => { openAutoScheduler(); setIsToolsMenuOpen(false); }}
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors text-indigo-700"
@@ -370,11 +382,11 @@ export default function Header() {
                 onClick={() => setActiveView(item.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-slate-900 text-white font-extrabold shadow-2xs'
+                    ? 'bg-indigo-600 text-white font-extrabold shadow-sm shadow-indigo-200/60'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-200' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
                 {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
@@ -389,7 +401,7 @@ export default function Header() {
               onClick={() => setIsMoreViewsOpen(!isMoreViewsOpen)}
               className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
                 isSecondaryActive 
-                  ? 'bg-slate-900 text-white font-extrabold shadow-2xs' 
+                  ? 'bg-indigo-600 text-white font-extrabold shadow-sm shadow-indigo-200/60' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
               }`}
             >
@@ -433,7 +445,7 @@ export default function Header() {
 
         {/* INLINE COMPACT FILTER POPOVER TOGGLE */}
         <div className="relative" ref={filterRef}>
-          <button
+          <button aria-haspopup="true" aria-expanded={isFilterOpen} data-testid="filter-button"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
               activeFiltersCount > 0 
