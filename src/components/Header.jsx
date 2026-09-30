@@ -108,26 +108,47 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Primary 1-Click Navigation Tabs
+  // Primary 1-Click Navigation Tabs (Ordered in natural sequential workflow)
   const primaryTabs = [
-    { id: 'getting-started', label: 'Get Started', icon: Sparkles, targetId: 'nav-getting-started' },
-    { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-group-execution' },
-    { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban' },
-    { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority' },
-    { id: 'dependencies', label: 'Dependencies', icon: GitCommit, targetId: 'nav-dependencies' },
-    { id: 'projects', label: 'Workspaces', icon: FolderKanban, targetId: 'nav-group-portfolio' },
-    { id: 'portfolio', label: 'Release Trains', icon: Layers, targetId: 'nav-portfolio' },
-    { id: 'integrations', label: 'Data Sync', icon: UploadCloud, targetId: 'nav-integrations' },
+    { id: 'getting-started', label: 'Get Started', icon: Sparkles, targetId: 'nav-getting-started', shortcut: 'Alt+1' },
+    { id: 'projects', label: 'Workspaces', icon: FolderKanban, targetId: 'nav-projects', shortcut: 'Alt+2' },
+    { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb, targetId: 'nav-ideas', shortcut: 'Alt+3' },
+    { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-gantt', shortcut: 'Alt+4' },
+    { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban', shortcut: 'Alt+5' },
+    { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority', shortcut: 'Alt+6' },
+    { id: 'portfolio', label: 'Release Trains', icon: Layers, targetId: 'nav-portfolio', shortcut: 'Alt+7' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, targetId: 'nav-analytics', shortcut: 'Alt+8' },
   ];
 
   // Secondary Views in 'More Views' Dropdown
   const secondaryTabs = [
-    { id: 'strategy', label: 'Strategic Goals & OKRs', icon: Target, desc: 'Corporate target alignment' },
-    { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community upvoting & feature requests' },
-    { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation' },
-    { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up & velocity reporting' },
-    { id: 'whatif', label: 'What-If Schedule Simulator', icon: Sliders, desc: 'Monte Carlo stochastic forecasting' }
+    { id: 'integrations', label: 'Data Sync & Integrations', icon: UploadCloud, desc: 'Excel, CSV, Jira & MS Project import/export', targetId: 'nav-integrations' },
+    { id: 'dependencies', label: 'Dependencies & Conflicts', icon: GitCommit, desc: 'Predecessors, successors & auto-reschedule', targetId: 'nav-dependencies' },
+    { id: 'strategy', label: 'Strategic Goals & OKRs', icon: Target, desc: 'Corporate target alignment', targetId: 'nav-strategy' },
+    { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation', targetId: 'nav-resource' },
+    { id: 'whatif', label: 'What-If Schedule Simulator', icon: Sliders, desc: 'Monte Carlo stochastic forecasting', targetId: 'nav-whatif' }
   ];
+
+  // Alt+1 .. Alt+8 Keyboard Shortcuts & Cmd+K / Ctrl+K for Kinetix IQ
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't trigger when user is typing inside an input or textarea
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.altKey && e.key >= '1' && e.key <= '8') {
+        const idx = parseInt(e.key) - 1;
+        if (primaryTabs[idx]) {
+          e.preventDefault();
+          setActiveView(primaryTabs[idx].id);
+        }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openAICopilot();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [primaryTabs, setActiveView, openAICopilot]);
 
   const activeFiltersCount = (filterGoal !== 'all' ? 1 : 0) + 
                              (filterPriority !== 'all' ? 1 : 0) + 
@@ -177,7 +198,7 @@ export default function Header() {
                   [{p.code}] {p.name}
                 </option>
               ))}
-              <option value="NAV_PROJECTS">+ Manage / Create Projects...</option>
+              <option value="NAV_PROJECTS">+ Manage / Create Workspaces...</option>
             </select>
           </div>
         </div>
@@ -281,7 +302,7 @@ export default function Header() {
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-indigo-700 font-bold flex items-center gap-2 transition-colors"
                   >
                     <FolderPlus className="w-4 h-4 text-indigo-600" />
-                    <span>New Project from Scratch...</span>
+                    <span>New Workspace from Scratch...</span>
                   </button>
                 </div>
               </div>
@@ -388,9 +409,6 @@ export default function Header() {
               >
                 <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-200' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
-                {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                )}
               </button>
             );
           })}
@@ -398,14 +416,18 @@ export default function Header() {
           {/* 'More Views' Dropdown Menu */}
           <div className="relative" ref={moreViewsRef}>
             <button
+              id="nav-more-views"
               onClick={() => setIsMoreViewsOpen(!isMoreViewsOpen)}
-              className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
                 isSecondaryActive 
                   ? 'bg-indigo-600 text-white font-extrabold shadow-sm shadow-indigo-200/60' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
               }`}
             >
               <span>More Views</span>
+              {dependencyConflicts.length > 0 && (
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+              )}
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMoreViewsOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -418,6 +440,7 @@ export default function Header() {
                   return (
                     <button
                       key={item.id}
+                      id={item.targetId || `nav-${item.id}`}
                       onClick={() => {
                         setActiveView(item.id);
                         setIsMoreViewsOpen(false);
@@ -430,6 +453,11 @@ export default function Header() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="truncate">{item.label}</span>
+                          {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded bg-amber-100 text-amber-800 border border-amber-300">
+                              {dependencyConflicts.length} conflicts
+                            </span>
+                          )}
                           {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
                         </div>
                         <span className="text-[10px] text-slate-400 font-normal block truncate">{item.desc}</span>

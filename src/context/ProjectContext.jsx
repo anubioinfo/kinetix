@@ -32,7 +32,7 @@ export function ProjectProvider({ children }) {
   const [currentProjectId, setCurrentProjectId] = useState('proj-1');
 
   // UI State
-  const [activeView, setActiveView] = useState('gantt'); // 'gantt' | 'priority' | 'dependencies' | 'strategy' | 'kanban' | 'ideas' | 'resource' | 'analytics'
+  const [activeView, setActiveViewRaw] = useState('gantt'); // 'gantt' | 'priority' | 'dependencies' | 'strategy' | 'kanban' | 'ideas' | 'resource' | 'analytics'
   const [searchQuery, setSearchQuery] = useState('');
   const [filterGoal, setFilterGoal] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
@@ -60,7 +60,7 @@ export function ProjectProvider({ children }) {
   // Kinetix IQ Drawer State
   const [isAICopilotOpen, setIsAICopilotOpen] = useState(false);
 
-  const openAICopilot = () => setIsAICopilotOpen(true);
+  const openAICopilot = () => setIsAICopilotOpen(prev => !prev);
   const closeAICopilot = () => setIsAICopilotOpen(false);
 
   const openDeveloperProfile = (name) => {
@@ -86,9 +86,22 @@ export function ProjectProvider({ children }) {
   const [isTourActive, setIsTourActive] = useState(false);
   const [currentTourStep, setCurrentTourStep] = useState(0);
 
+  const tourViewMap = ['projects', 'ideas', 'gantt', 'priority', 'dependencies', 'portfolio', 'analytics', 'integrations'];
+
+  const setActiveView = (viewId) => {
+    setActiveViewRaw(viewId);
+    if (isTourActive) {
+      const stepIdx = tourViewMap.indexOf(viewId);
+      if (stepIdx !== -1) {
+        setCurrentTourStep(stepIdx);
+      }
+    }
+  };
+
   const startTour = () => {
     setIsTourActive(true);
     setCurrentTourStep(0);
+    setActiveViewRaw('projects');
   };
 
   const endTour = () => {
@@ -326,8 +339,9 @@ export function ProjectProvider({ children }) {
     }
   };
 
-  const promoteIdeaToMilestone = (ideaId) => {
-    const idea = ideas.find(i => i.id === ideaId);
+  const promoteIdeaToMilestone = (ideaArg) => {
+    const targetId = typeof ideaArg === 'object' ? ideaArg?.id : ideaArg;
+    const idea = ideas.find(i => i.id === targetId) || (typeof ideaArg === 'object' ? ideaArg : null);
     if (!idea) return;
 
     const newMs = {
@@ -340,18 +354,30 @@ export function ProjectProvider({ children }) {
       status: 'Not Started',
       health: 'On Track',
       priority: 'P1',
-      impact: 7,
+      impact: 8,
       effort: 4,
       owner: 'Anurag',
       progress: 0,
       dependencies: [],
-      features: []
+      features: [
+        { id: 'f-prom-1', title: `Initial design & architecture for ${idea.title}`, completed: false, points: 5 },
+        { id: 'f-prom-2', title: `Core feature implementation & testing`, completed: false, points: 5 }
+      ]
     };
 
     setMilestones(prev => [...prev, newMs]);
-    setIdeas(prev => prev.map(i => i.id === ideaId ? { ...i, status: 'Approved' } : i));
+    setIdeas(prev => prev.map(i => i.id === idea.id ? { ...i, status: 'Promoted' } : i));
     setSelectedMilestoneId(newMs.id);
     addActivityLog('Anurag', 'Promoted Idea', 'idea', `Promoted idea "${idea.title}" to active roadmap milestone`);
+
+    if (addNotification) {
+      addNotification(
+        'Idea Promoted to Milestone',
+        `Idea "${idea.title}" has been successfully added to active roadmap milestones.`,
+        'success',
+        'gantt'
+      );
+    }
   };
 
   // --- 🔔 Notification Drawer & Webhook Simulator State ---
