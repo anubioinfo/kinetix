@@ -32,6 +32,7 @@ import AutoSchedulerModal from './components/AutoSchedulerModal';
 import SprintRetrospectiveModal from './components/SprintRetrospectiveModal';
 import ReleaseNotesModal from './components/ReleaseNotesModal';
 import QuickStartWidget from './components/QuickStartWidget';
+import CommandPaletteModal from './components/CommandPaletteModal';
 
 function MainContent() {
   const { activeView } = useProject();
@@ -79,6 +80,7 @@ function AppContent() {
       <IntegrationHubModal isOpen={isIntegrationModalOpen} onClose={closeIntegrationHub} />
       <OnboardingTour />
       <QuickStartWidget />
+      <CommandPaletteModal />
     </div>
   );
 }

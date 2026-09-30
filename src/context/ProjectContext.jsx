@@ -63,6 +63,13 @@ export function ProjectProvider({ children }) {
   const openAICopilot = () => setIsAICopilotOpen(prev => !prev);
   const closeAICopilot = () => setIsAICopilotOpen(false);
 
+  // Enterprise Command Palette State
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  const openCommandPalette = () => setIsCommandPaletteOpen(true);
+  const closeCommandPalette = () => setIsCommandPaletteOpen(false);
+  const toggleCommandPalette = () => setIsCommandPaletteOpen(prev => !prev);
+
   const openDeveloperProfile = (name) => {
     if (!name) return;
     setSelectedDeveloperName(name);
@@ -606,6 +613,8 @@ export function ProjectProvider({ children }) {
       openDeveloperProfile, closeDeveloperProfile,
       isAICopilotOpen, setIsAICopilotOpen,
       openAICopilot, closeAICopilot,
+      isCommandPaletteOpen, setIsCommandPaletteOpen,
+      openCommandPalette, closeCommandPalette, toggleCommandPalette,
       isIntegrationModalOpen, setIsIntegrationModalOpen,
       openIntegrationHub, closeIntegrationHub,
       darkMode, setDarkMode,

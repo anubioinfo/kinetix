@@ -75,7 +75,9 @@ export default function Header() {
     setTimeTravelDate,
     // 🔮 Retro & 🌐 Changelog Modals
     openRetroModal,
-    openChangelogModal
+    openChangelogModal,
+    // ⌘K Command Palette
+    toggleCommandPalette
   } = useProject();
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -129,7 +131,7 @@ export default function Header() {
     { id: 'whatif', label: 'What-If Schedule Simulator', icon: Sliders, desc: 'Monte Carlo stochastic forecasting', targetId: 'nav-whatif' }
   ];
 
-  // Alt+1 .. Alt+8 Keyboard Shortcuts & Cmd+K / Ctrl+K for Kinetix IQ
+  // Alt+1 .. Alt+8 Keyboard Shortcuts & Cmd+K / Ctrl+K for Command Palette
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Don't trigger when user is typing inside an input or textarea
@@ -143,12 +145,12 @@ export default function Header() {
       }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        openAICopilot();
+        toggleCommandPalette();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [primaryTabs, setActiveView, openAICopilot]);
+  }, [primaryTabs, setActiveView, toggleCommandPalette]);
 
   const activeFiltersCount = (filterGoal !== 'all' ? 1 : 0) + 
                              (filterPriority !== 'all' ? 1 : 0) + 
@@ -203,24 +205,34 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative flex-1 max-w-sm mx-2 hidden sm:block">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search milestones, tags, owners..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100/70 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-xl border border-slate-200/80 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
-          />
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 hover:text-slate-700"
-            >
-              Clear
-            </button>
-          )}
+        {/* Search Bar & Command Palette Button */}
+        <div className="relative flex-1 max-w-sm mx-2 hidden sm:flex items-center gap-1.5">
+          <div className="relative flex-1">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search milestones, tags, owners..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-100/70 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-xl border border-slate-200/80 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 hover:text-slate-700"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={toggleCommandPalette}
+            className="px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono font-bold flex items-center gap-1 transition-colors shrink-0 shadow-2xs"
+            title="Launch Command Palette (Cmd+K / Ctrl+K)"
+          >
+            <span>⌘K</span>
+          </button>
         </div>
 
         {/* Action Controls */}
