@@ -1,16 +1,8 @@
 @import "tailwindcss";
+@import "./theme.css";
 
 @layer base {
-  :root {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.95);
-    --border-color: #e2e8f0;
-    --accent-purple: #6366f1;
-    --accent-teal: #0D9488;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-  }
+  /* Colors are defined in theme.css using CSS variables */
 
   body {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -114,3 +106,93 @@
 .conflict-pulse {
   animation: pulse-border-light 2s infinite ease-in-out;
 }
+
+/* ─── #2 View Transition Animation ──────────────────────────────── */
+@keyframes view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.view-enter {
+  animation: view-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── #3 Nav Tab Active Pill (via JS className swap in Header.jsx) ─ */
+/* Styles are applied directly in JSX — no extra class needed here  */
+
+/* ─── #4 Card Hover Lift ─────────────────────────────────────────── */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  will-change: transform, box-shadow;
+}
+
+.card-hover:hover {
+  box-shadow: 0 12px 32px -6px rgba(99, 102, 241, 0.18), 0 4px 16px -4px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ─── #5 AI Button Neon Glow ────────────────────────────────────── */
+.btn-ai-glow {
+  transition: box-shadow 0.25s ease, opacity 0.15s ease, transform 0.15s ease;
+}
+
+.btn-ai-glow:hover {
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25), 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+/* ─── #6 Modal Backdrop — softer glassmorphism ──────────────────── */
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ─── Notification badge ping ring ─────────────────────────────── */
+@keyframes badge-ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.badge-ping::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: badge-ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.6;
+}
+
+/* ─── Gantt bar gradient helpers ────────────────────────────────── */
+.gantt-bar-inprogress {
+  background: linear-gradient(90deg, #818cf8 0%, #6366f1 60%, #4f46e5 100%);
+  border-color: #4f46e5;
+  color: #fff;
+}
+
+.gantt-bar-completed {
+  background: linear-gradient(90deg, #34d399 0%, #10b981 60%, #059669 100%);
+  border-color: #059669;
+  color: #fff;
+}
+
+.gantt-bar-notstarted {
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.gantt-bar-conflict {
+  background: linear-gradient(90deg, #fde68a 0%, #fbbf24 60%, #f59e0b 100%);
+  border-color: #d97706;
+  color: #78350f;
+}
+

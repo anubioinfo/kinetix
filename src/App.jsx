@@ -12,6 +12,9 @@ import AnalyticsView from './views/AnalyticsView';
 import IntegrationHubView from './views/IntegrationHubView';
 import PortfolioView from './views/PortfolioView';
 import ProjectsView from './views/ProjectsView';
+import WhatIfSimulatorView from './views/WhatIfSimulatorView';
+
+import GettingStartedView from './views/GettingStartedView';
 
 import MilestoneModal from './components/MilestoneModal';
 import GoalModal from './components/GoalModal';
@@ -21,12 +24,20 @@ import OnboardingTour from './components/OnboardingTour';
 import DeveloperProfileModal from './components/DeveloperProfileModal';
 import AICopilotDrawer from './components/AICopilotDrawer';
 import IntegrationHubModal from './components/IntegrationHubModal';
+import ActivityTicker from './components/ActivityTicker';
+import AIRiskWarningBanner from './components/AIRiskWarningBanner';
+import NotificationDrawer from './components/NotificationDrawer';
+import TimeTravelBar from './components/TimeTravelBar';
+import AutoSchedulerModal from './components/AutoSchedulerModal';
+import SprintRetrospectiveModal from './components/SprintRetrospectiveModal';
+import ReleaseNotesModal from './components/ReleaseNotesModal';
+import QuickStartWidget from './components/QuickStartWidget';
 
 function MainContent() {
   const { activeView } = useProject();
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <main key={activeView} className="view-enter max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {activeView === 'gantt' && <GanttView />}
       {activeView === 'projects' && <ProjectsView />}
       {activeView === 'portfolio' && <PortfolioView />}
@@ -38,25 +49,36 @@ function MainContent() {
       {activeView === 'resource' && <ResourceView />}
       {activeView === 'analytics' && <AnalyticsView />}
       {activeView === 'integrations' && <IntegrationHubView />}
+      {activeView === 'whatif' && <WhatIfSimulatorView />}
+      {activeView === 'getting-started' && <GettingStartedView />}
     </main>
   );
 }
+
 
 function AppContent() {
   const { isAICopilotOpen, closeAICopilot, isIntegrationModalOpen, closeIntegrationHub } = useProject();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+      <TimeTravelBar />
       <Header />
+      <ActivityTicker />
+      <AIRiskWarningBanner />
       <MainContent />
       <MilestoneModal />
       <GoalModal />
       <IdeaModal />
       <DetailDrawer />
       <DeveloperProfileModal />
+      <NotificationDrawer />
+      <AutoSchedulerModal />
+      <SprintRetrospectiveModal />
+      <ReleaseNotesModal />
       <AICopilotDrawer isOpen={isAICopilotOpen} onClose={closeAICopilot} />
       <IntegrationHubModal isOpen={isIntegrationModalOpen} onClose={closeIntegrationHub} />
       <OnboardingTour />
+      <QuickStartWidget />
     </div>
   );
 }

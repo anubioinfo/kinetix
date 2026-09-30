@@ -16,7 +16,8 @@ import {
   Building2,
   PieChart,
   Clock,
-  Play
+  Play,
+  Globe
 } from 'lucide-react';
 import { formatPrettyDate } from '../utils/dateUtils';
 
@@ -29,7 +30,8 @@ export default function PortfolioView() {
     setReleases, 
     team, 
     setSelectedMilestoneId,
-    openDeveloperProfile 
+    openDeveloperProfile,
+    openChangelogModal
   } = useProject();
 
   const [activeTab, setActiveTab] = useState('trains'); // 'trains' | 'portfolios' | 'velocity'
@@ -156,6 +158,14 @@ export default function PortfolioView() {
               <span className="font-extrabold text-sm text-emerald-300">{avgReadiness}%</span>
             </div>
           </div>
+
+          <button
+            onClick={openChangelogModal}
+            className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 border border-white/20"
+          >
+            <Globe className="w-4 h-4 text-emerald-300" />
+            <span>Product Release Notes</span>
+          </button>
 
           <button
             onClick={() => setIsAddReleaseModalOpen(true)}
