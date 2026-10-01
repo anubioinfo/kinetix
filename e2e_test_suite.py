@@ -194,13 +194,14 @@ class KinetixMasterE2ETestSuite:
     def test_02_full_navigation_matrix(self):
         log("Stage 2: Testing Full Navigation Matrix (Primary Tabs & Secondary Dropdowns)", "STEP")
         primary_tabs = [
+            ("Get Started", "//button[contains(., 'Get Started')]"),
+            ("Workspaces Directory", "//button[contains(., 'Workspaces')]"),
+            ("Ideas Portal", "//button[contains(., 'Ideas Portal')]"),
+            ("Roadmap Timeline", "//button[contains(., 'Roadmap')]"),
             ("Kanban Board", "//button[contains(., 'Kanban')]"),
             ("Priority Matrix", "//button[contains(., 'Priority Matrix')]"),
-            ("Dependencies", "//button[contains(., 'Dependencies')]"),
-            ("Workspaces Directory", "//button[contains(., 'Workspaces')]"),
             ("Release Trains", "//button[contains(., 'Release Trains')]"),
-            ("Data Sync Integration Hub", "//button[contains(., 'Data Sync')]"),
-            ("Roadmap Timeline", "//button[contains(., 'Roadmap')]"),
+            ("Analytics Dashboard", "//button[contains(., 'Analytics')]"),
         ]
 
         for tab_name, xpath in primary_tabs:
@@ -215,10 +216,10 @@ class KinetixMasterE2ETestSuite:
                 self.issues.append(msg)
 
         secondary_views = [
+            ("Data Sync & Integrations", "//*[contains(text(), 'Data Sync & Integrations')]"),
+            ("Dependencies & Conflicts", "//*[contains(text(), 'Dependencies & Conflicts')]"),
             ("Strategic Goals & OKRs", "//*[contains(text(), 'Strategic Goals & OKRs')]"),
-            ("Ideas & Innovation Portal", "//*[contains(text(), 'Ideas & Innovation Portal')]"),
             ("Team Capacity & Workload", "//*[contains(text(), 'Team Capacity & Workload')]"),
-            ("Executive Analytics", "//*[contains(text(), 'Executive Analytics')]"),
             ("What-If Schedule Simulator", "//*[contains(text(), 'What-If Schedule Simulator')]"),
         ]
 
@@ -401,10 +402,10 @@ class KinetixMasterE2ETestSuite:
         log("Stage 8: Creating New Project Workspace & Testing Context Switching", "STEP")
         try:
             self.safe_click("//button[contains(., 'Workspaces')]")
-            self.safe_click("//button[contains(., 'Create New Project')]")
+            self.safe_click("//button[contains(., 'Create New Workspace') or contains(., 'Create New Project')]")
 
             name_input = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Project Nova')]"))
+                EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Workspace Nova') or contains(@placeholder, 'Project Nova')]"))
             )
             self.safe_type(name_input, "Mobile Payment Gateway E2E")
 
@@ -672,8 +673,7 @@ class KinetixMasterE2ETestSuite:
             log("Submitted Community Feature Idea 'Offline P2P Encrypted Wallet Sync'!", "PASS")
             self.passed_tests += 1
 
-            self.safe_click("//button[contains(., 'More Views')]")
-            self.safe_click("//*[contains(text(), 'Ideas & Innovation Portal')]")
+            self.safe_click("//button[contains(., 'Ideas Portal')]")
 
             upvote_btns = self.driver.find_elements(By.XPATH, "//button[contains(., 'Upvote') or contains(., '▲')]")
             if upvote_btns:
@@ -728,7 +728,8 @@ class KinetixMasterE2ETestSuite:
     def test_18_dependency_graph_and_auto_fix(self):
         log("Stage 18: Testing SVG Dependency Topology Graph & 1-Click Schedule Auto-Fix", "STEP")
         try:
-            self.safe_click("//button[contains(., 'Dependencies')]")
+            self.safe_click("//button[contains(., 'More Views')]")
+            self.safe_click("//*[contains(text(), 'Dependencies & Conflicts')]")
 
             autofix_btns = self.driver.find_elements(By.XPATH, "//button[contains(., 'Auto-Fix') or contains(., 'Resolve Slips')]")
             if autofix_btns:
@@ -752,7 +753,8 @@ class KinetixMasterE2ETestSuite:
     def test_19_integration_hub_jira_and_xml_sync(self):
         log("Stage 19: Testing Data Sync & Integration Hub (Jira Cloud API & MS Project XML)", "STEP")
         try:
-            self.safe_click("//button[contains(., 'Data Sync')]")
+            self.safe_click("//button[contains(., 'More Views')]")
+            self.safe_click("//*[contains(text(), 'Data Sync & Integrations')]")
 
             sync_tabs = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'Jira') or contains(text(), 'Project XML') or contains(text(), 'CSV')]")
             if sync_tabs:
@@ -779,8 +781,7 @@ class KinetixMasterE2ETestSuite:
     def test_20_evm_analytics_and_velocity_burndown(self):
         log("Stage 20: Testing Executive EVM Analytics (SPI, CPI) & Velocity Burndown Chart", "STEP")
         try:
-            self.safe_click("//button[contains(., 'More Views')]")
-            self.safe_click("//*[contains(text(), 'Executive Analytics')]")
+            self.safe_click("//button[contains(., 'Analytics')]")
 
             evm_metrics = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'SPI') or contains(text(), 'CPI') or contains(text(), 'Earned Value')]")
             if evm_metrics:
