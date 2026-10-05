@@ -421,13 +421,6 @@ export default function Header() {
               >
                 <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-200' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
-                {item.shortcut && (
-                  <span className={`text-[9px] font-mono px-1 py-0.2 rounded transition-opacity ${
-                    isActive ? 'bg-indigo-700/80 text-indigo-100 font-bold' : 'bg-slate-200/70 text-slate-500 opacity-60 group-hover:opacity-100'
-                  }`}>
-                    {item.shortcut}
-                  </span>
-                )}
               </button>
             );
           })}
