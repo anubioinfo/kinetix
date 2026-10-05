@@ -5,65 +5,65 @@ import { Sparkles, ChevronLeft, X, ArrowUp } from 'lucide-react';
 export const tourSteps = [
   {
     step: 1,
+    view: 'projects',
+    targetId: 'nav-projects',
+    tabLabel: 'Workspace Directory',
+    title: '1. Multi-Workspace Management & Access Roles',
+    description: 'Create brand new workspaces from scratch, switch active workspaces, and manage role-based user access permissions.',
+    actionLabel: 'Next: Ideas Portal →'
+  },
+  {
+    step: 2,
+    view: 'ideas',
+    targetId: 'nav-ideas',
+    tabLabel: 'Ideas Portal',
+    title: '2. Stakeholder Ideas Portal & Upvoting',
+    description: 'Gather feature suggestions, upvote popular ideas, and click "Promote to Milestone" to convert ideas into roadmap items before planning.',
+    actionLabel: 'Next: Product Delivery & Roadmap →'
+  },
+  {
+    step: 3,
     view: 'gantt',
-    targetId: 'nav-group-execution',
+    targetId: 'nav-gantt',
     tabLabel: 'Product Delivery (Roadmap & Gantt)',
-    title: '1. Product Delivery & Interactive Roadmap',
+    title: '3. Product Delivery & Interactive Roadmap',
     description: 'Reschedule dates by dragging milestone bars left or right. Link predecessors & dependencies with 1-click!',
     actionLabel: 'Next: RICE Priority Matrix →'
   },
   {
-    step: 2,
+    step: 4,
     view: 'priority',
-    targetId: 'nav-group-execution',
+    targetId: 'nav-priority',
     tabLabel: 'RICE Priority Matrix',
-    title: '2. Priority & Value Scorecard (2x2 & RICE)',
+    title: '4. Priority & Value Scorecard (2x2 & RICE)',
     description: 'Evaluate effort vs impact in 4 quadrants or rank features automatically using Reach × Impact × Confidence ÷ Effort.',
     actionLabel: 'Next: Dependency Network →'
   },
   {
-    step: 3,
+    step: 5,
     view: 'dependencies',
-    targetId: 'nav-group-execution',
+    targetId: 'nav-dependencies',
     tabLabel: 'Dependency Network',
-    title: '3. Dependency Network & Conflict Inspector',
+    title: '5. Dependency Network & Conflict Inspector',
     description: 'Map predecessors & successors. If dates overlap, click "Auto-Reschedule" to fix schedule conflicts instantly!',
-    actionLabel: 'Next: Project Workspaces →'
-  },
-  {
-    step: 4,
-    view: 'projects',
-    targetId: 'nav-group-portfolio',
-    tabLabel: 'Project Workspaces',
-    title: '4. Multi-Project Workspaces & Access Roles',
-    description: 'Create brand new projects from scratch, switch active workspaces, and manage role-based user access permissions.',
     actionLabel: 'Next: Agile Release Trains →'
   },
   {
-    step: 5,
-    view: 'portfolio',
-    targetId: 'nav-group-portfolio',
-    tabLabel: 'Agile Release Trains',
-    title: '5. Agile Release Trains (ART) & SAFe Tracks',
-    description: 'Group milestones into Program Increments (PI), track release readiness %, and dispatch release trains with 1-click!',
-    actionLabel: 'Next: Ideas Portal →'
-  },
-  {
     step: 6,
-    view: 'ideas',
-    targetId: 'nav-group-insights',
-    tabLabel: 'Ideas Portal',
-    title: '6. Stakeholder Ideas Portal & Upvoting',
-    description: 'Gather feature suggestions, upvote popular ideas, and click "Promote to Milestone" to convert ideas into roadmap items.',
-    actionLabel: 'Next: Team Capacity →'
+    view: 'portfolio',
+    targetId: 'nav-portfolio',
+    tabLabel: 'Agile Release Trains',
+    title: '6. Agile Release Trains (ART) & SAFe Tracks',
+    description: 'Group milestones into Program Increments (PI), track release readiness %, and dispatch release trains with 1-click!',
+    actionLabel: 'Next: Executive Analytics →'
   },
   {
     step: 7,
-    view: 'resource',
-    targetId: 'nav-group-insights',
-    tabLabel: 'Team Capacity',
-    title: '7. Team Workload & Capacity Planning',
-    description: 'Monitor weekly assigned hours per engineer against capacity limits to ensure optimal workload distribution.',
+    view: 'analytics',
+    targetId: 'nav-analytics',
+    tabLabel: 'Executive Analytics',
+    title: '7. Executive Analytics & EVM Velocity',
+    description: 'Review Earned Value Management metrics, burndown charts, and completion velocity over time.',
     actionLabel: 'Next: Data Sync & Integrations →'
   },
   {
@@ -72,7 +72,7 @@ export const tourSteps = [
     targetId: 'nav-integrations',
     tabLabel: 'Data Sync & Integrations',
     title: '8. Data Sync & Enterprise Integrations',
-    description: 'Import & export project milestones with Excel, CSV, Jira Software Cloud, and Microsoft Project XML format!',
+    description: 'Import & export workspace milestones with Excel, CSV, Jira Software Cloud, and Microsoft Project XML format!',
     actionLabel: 'Finish Walkthrough 🎉'
   }
 ];
@@ -102,7 +102,10 @@ export default function OnboardingTour() {
     if (!isTourActive || !currentStepData) return;
 
     const updateRect = () => {
-      const el = document.getElementById(currentStepData.targetId);
+      let el = document.getElementById(currentStepData.targetId);
+      if (!el && ['integrations', 'dependencies', 'resource', 'strategy', 'whatif'].includes(currentStepData.view)) {
+        el = document.getElementById('nav-more-views');
+      }
       if (el) {
         const rect = el.getBoundingClientRect();
         setTargetRect({
@@ -119,12 +122,14 @@ export default function OnboardingTour() {
     };
 
     updateRect();
-    const timer = setTimeout(updateRect, 120);
+    const t1 = setTimeout(updateRect, 50);
+    const t2 = setTimeout(updateRect, 200);
     window.addEventListener('resize', updateRect);
     window.addEventListener('scroll', updateRect);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(t1);
+      clearTimeout(t2);
       window.removeEventListener('resize', updateRect);
       window.removeEventListener('scroll', updateRect);
     };
@@ -166,19 +171,22 @@ export default function OnboardingTour() {
       {/* Spotlight Glowing Frame around the option button */}
       {targetRect && (
         <div
-          onClick={nextTourStep}
+          onClick={() => {
+            setActiveView(currentStepData.view);
+            nextTourStep();
+          }}
           title="Click to activate option and advance to next step!"
           style={{
             top: targetRect.top - 6 + 'px',
             left: targetRect.left - 6 + 'px',
             width: targetRect.width + 12 + 'px',
             height: targetRect.height + 12 + 'px',
-            boxShadow: '0 0 0 9999px rgba(15, 23, 42, 0.45), 0 10px 25px -5px rgba(99, 102, 241, 0.5)'
+            boxShadow: '0 0 0 9999px rgba(15, 23, 42, 0.45), 0 0 20px 4px rgba(99, 102, 241, 0.6)'
           }}
-          className="fixed z-50 rounded-xl border-2 border-indigo-500 bg-white/10 cursor-pointer transition-all duration-300 flex items-center justify-center px-3 shadow-2xl"
+          className="fixed z-50 rounded-xl border-2 border-indigo-500 bg-indigo-500/10 cursor-pointer transition-all duration-300 flex items-center justify-center px-3 shadow-2xl animate-pulse"
         >
           {/* Number Badge */}
-          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[11px] flex items-center justify-center shadow-lg border-2 border-white animate-pulse">
+          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[11px] flex items-center justify-center shadow-lg border-2 border-white">
             {currentTourStep + 1}
           </div>
         </div>
@@ -198,6 +206,22 @@ export default function OnboardingTour() {
             <ArrowUp className="w-6 h-6 fill-indigo-600 text-indigo-600" />
           </div>
         )}
+
+        {/* 8-Segment Step Progress Bar */}
+        <div className="flex items-center gap-1.5 w-full pt-1">
+          {tourSteps.map((s, idx) => (
+            <div
+              key={idx}
+              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                idx === currentTourStep
+                  ? 'bg-indigo-600 shadow-xs'
+                  : idx < currentTourStep
+                  ? 'bg-indigo-300'
+                  : 'bg-slate-200'
+              }`}
+            />
+          ))}
+        </div>
 
         {/* Header Bar */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -229,15 +253,22 @@ export default function OnboardingTour() {
           {currentStepData.description}
         </p>
 
-        {/* Navigation Actions */}
+        {/* Interactive Step Jump Dots */}
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-          {/* Skip Button */}
-          <button
-            onClick={endTour}
-            className="text-slate-500 hover:text-slate-800 font-bold hover:underline text-xs"
-          >
-            Skip Tour
-          </button>
+          <div className="flex items-center gap-1">
+            {tourSteps.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveView(tourSteps[idx].view)}
+                title={`Jump to Step ${idx + 1}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  idx === currentTourStep
+                    ? 'bg-indigo-600 ring-2 ring-indigo-400 scale-110'
+                    : 'bg-slate-300 hover:bg-slate-400'
+                }`}
+              />
+            ))}
+          </div>
 
           {/* Previous & Next Buttons */}
           <div className="flex items-center gap-2">

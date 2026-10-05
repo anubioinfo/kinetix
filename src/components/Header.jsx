@@ -22,9 +22,14 @@ import {
   ChevronDown,
   FolderPlus,
   SlidersHorizontal,
+  Sliders,
   Filter,
   Check,
-  X
+  X,
+  Bell,
+  Bot,
+  Clock,
+  Globe
 } from 'lucide-react';
 import { exportMilestonesToCSV } from '../utils/exportUtils';
 
@@ -58,7 +63,21 @@ export default function Header() {
     projects,
     currentProjectId,
     currentProject,
-    switchProject
+    switchProject,
+    aiRiskAlerts,
+    // 🔔 Notifications & Webhooks
+    openNotificationDrawer,
+    unreadCount,
+    // 🤖 AI Auto-Scheduler
+    openAutoScheduler,
+    // 🕒 Time Travel
+    timeTravelDate,
+    setTimeTravelDate,
+    // 🔮 Retro & 🌐 Changelog Modals
+    openRetroModal,
+    openChangelogModal,
+    // ⌘K Command Palette
+    toggleCommandPalette
   } = useProject();
 
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -91,24 +110,47 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Primary 1-Click Navigation Tabs
+  // Primary 1-Click Navigation Tabs (Ordered in natural sequential workflow)
   const primaryTabs = [
-    { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-group-execution' },
-    { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban' },
-    { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority' },
-    { id: 'dependencies', label: 'Dependencies', icon: GitCommit, targetId: 'nav-dependencies' },
-    { id: 'projects', label: 'Workspaces', icon: FolderKanban, targetId: 'nav-group-portfolio' },
-    { id: 'portfolio', label: 'Release Trains', icon: Layers, targetId: 'nav-portfolio' },
-    { id: 'integrations', label: 'Data Sync', icon: UploadCloud, targetId: 'nav-integrations' },
+    { id: 'getting-started', label: 'Get Started', icon: Sparkles, targetId: 'nav-getting-started', shortcut: 'Alt+1' },
+    { id: 'projects', label: 'Workspaces', icon: FolderKanban, targetId: 'nav-projects', shortcut: 'Alt+2' },
+    { id: 'ideas', label: 'Ideas Portal', icon: Lightbulb, targetId: 'nav-ideas', shortcut: 'Alt+3' },
+    { id: 'gantt', label: 'Roadmap', icon: Calendar, targetId: 'nav-gantt', shortcut: 'Alt+4' },
+    { id: 'kanban', label: 'Kanban', icon: Kanban, targetId: 'nav-kanban', shortcut: 'Alt+5' },
+    { id: 'priority', label: 'Priority Matrix', icon: Grid, targetId: 'nav-priority', shortcut: 'Alt+6' },
+    { id: 'portfolio', label: 'Release Trains', icon: Layers, targetId: 'nav-portfolio', shortcut: 'Alt+7' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, targetId: 'nav-analytics', shortcut: 'Alt+8' },
   ];
 
   // Secondary Views in 'More Views' Dropdown
   const secondaryTabs = [
-    { id: 'strategy', label: 'Strategic Goals & OKRs', icon: Target, desc: 'Corporate target alignment' },
-    { id: 'ideas', label: 'Ideas & Innovation Portal', icon: Lightbulb, desc: 'Community upvoting & feature requests' },
-    { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation' },
-    { id: 'analytics', label: 'Executive Analytics', icon: BarChart3, desc: 'Burn-up & velocity reporting' },
+    { id: 'integrations', label: 'Data Sync & Integrations', icon: UploadCloud, desc: 'Excel, CSV, Jira & MS Project import/export', targetId: 'nav-integrations' },
+    { id: 'dependencies', label: 'Dependencies & Conflicts', icon: GitCommit, desc: 'Predecessors, successors & auto-reschedule', targetId: 'nav-dependencies' },
+    { id: 'strategy', label: 'Strategic Goals & OKRs', icon: Target, desc: 'Corporate target alignment', targetId: 'nav-strategy' },
+    { id: 'resource', label: 'Team Capacity & Workload', icon: Users, desc: 'Engineer load & hour allocation', targetId: 'nav-resource' },
+    { id: 'whatif', label: 'What-If Schedule Simulator', icon: Sliders, desc: 'Monte Carlo stochastic forecasting', targetId: 'nav-whatif' }
   ];
+
+  // Alt+1 .. Alt+8 Keyboard Shortcuts & Cmd+K / Ctrl+K for Command Palette
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't trigger when user is typing inside an input or textarea
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.altKey && e.key >= '1' && e.key <= '8') {
+        const idx = parseInt(e.key) - 1;
+        if (primaryTabs[idx]) {
+          e.preventDefault();
+          setActiveView(primaryTabs[idx].id);
+        }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleCommandPalette();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [primaryTabs, setActiveView, toggleCommandPalette]);
 
   const activeFiltersCount = (filterGoal !== 'all' ? 1 : 0) + 
                              (filterPriority !== 'all' ? 1 : 0) + 
@@ -158,29 +200,39 @@ export default function Header() {
                   [{p.code}] {p.name}
                 </option>
               ))}
-              <option value="NAV_PROJECTS">+ Manage / Create Projects...</option>
+              <option value="NAV_PROJECTS">+ Manage / Create Workspaces...</option>
             </select>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative flex-1 max-w-sm mx-2 hidden sm:block">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search milestones, tags, owners..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100/70 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-xl border border-slate-200/80 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
-          />
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 hover:text-slate-700"
-            >
-              Clear
-            </button>
-          )}
+        {/* Search Bar & Command Palette Button */}
+        <div className="relative flex-1 max-w-sm mx-2 hidden sm:flex items-center gap-1.5">
+          <div className="relative flex-1">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search milestones, tags, owners..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-100/70 text-slate-800 text-xs pl-8 pr-4 py-1.5 rounded-xl border border-slate-200/80 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 font-medium"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 hover:text-slate-700"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={toggleCommandPalette}
+            className="px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono font-bold flex items-center gap-1 transition-colors shrink-0 shadow-2xs"
+            title="Launch Command Palette (Cmd+K / Ctrl+K)"
+          >
+            <span>⌘K</span>
+          </button>
         </div>
 
         {/* Action Controls */}
@@ -198,12 +250,26 @@ export default function Header() {
             </button>
           )}
 
+          {/* 🔔 Notification Bell Button */}
+          <button
+            onClick={openNotificationDrawer}
+            className="relative p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors shadow-2xs"
+            title="Notification Center & Slack/Teams Webhooks" aria-label="Notifications" data-testid="notification-button"
+          >
+            <Bell className="w-4 h-4 text-slate-700" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white font-black text-[9px] rounded-full flex items-center justify-center animate-pulse shadow-2xs">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
           {/* Kinetix IQ AI Button */}
           <button
             id="btn-kinetix-iq"
             onClick={openAICopilot}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white hover:opacity-95 shadow-xs transition-all active:scale-95 border border-purple-400/30"
-            title="Launch Kinetix IQ Assistant & Milestone Generator"
+            className="btn-ai-glow flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-xs active:scale-95 border border-purple-400/30"
+            title="Launch Kinetix IQ Assistant & Milestone Generator" aria-label="Kinetix IQ Assistant" data-testid="ai-button"
           >
             <Sparkles className="w-3.5 h-3.5 text-purple-200 animate-pulse" />
             <span>Kinetix IQ</span>
@@ -211,10 +277,7 @@ export default function Header() {
 
           {/* + CREATE DROPDOWN MENU */}
           <div className="relative" ref={createMenuRef}>
-            <button
-              onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all active:scale-95"
-            >
+            <button onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)} aria-haspopup="true" aria-expanded={isCreateMenuOpen} data-testid="create-button" className="flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all active:scale-95">
               <Plus className="w-4 h-4" />
               <span>Create</span>
               <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isCreateMenuOpen ? 'rotate-180' : ''}`} />
@@ -251,7 +314,7 @@ export default function Header() {
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-indigo-700 font-bold flex items-center gap-2 transition-colors"
                   >
                     <FolderPlus className="w-4 h-4 text-indigo-600" />
-                    <span>New Project from Scratch...</span>
+                    <span>New Workspace from Scratch...</span>
                   </button>
                 </div>
               </div>
@@ -260,11 +323,7 @@ export default function Header() {
 
           {/* WORKSPACE TOOLS DROPDOWN */}
           <div className="relative" ref={toolsMenuRef}>
-            <button
-              onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs"
-              title="Tools & Integrations"
-            >
+            <button onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)} aria-haspopup="true" aria-expanded={isToolsMenuOpen} data-testid="tools-button" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all shadow-2xs" title="Tools & Integrations">
               <UploadCloud className="w-3.5 h-3.5 text-slate-600" />
               <span>Tools</span>
               <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isToolsMenuOpen ? 'rotate-180' : ''}`} />
@@ -273,6 +332,34 @@ export default function Header() {
             {isToolsMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-scale-up font-medium text-xs divide-y divide-slate-100">
                 <div className="py-1">
+                  <button
+                    onClick={() => { openRetroModal(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-purple-50 text-purple-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
+                    <span>AI Sprint Retrospective</span>
+                  </button>
+                  <button
+                    onClick={() => { openChangelogModal(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-emerald-50 text-emerald-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <span>Product Release Notes</span>
+                  </button>
+                  <button
+                    onClick={() => { openAutoScheduler(); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors text-indigo-700"
+                  >
+                    <Bot className="w-4 h-4 text-indigo-600" />
+                    <span>AI Auto-Scheduler</span>
+                  </button>
+                  <button
+                    onClick={() => { setTimeTravelDate('2026-09-01'); setIsToolsMenuOpen(false); }}
+                    className="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-900 font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Clock className="w-4 h-4 text-amber-600" />
+                    <span>Time Travel Mode</span>
+                  </button>
                   <button
                     onClick={() => { openIntegrationHub(); setIsToolsMenuOpen(false); }}
                     className="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-800 font-bold flex items-center gap-2 transition-colors"
@@ -326,16 +413,20 @@ export default function Header() {
                 key={item.id}
                 id={item.targetId || `nav-${item.id}`}
                 onClick={() => setActiveView(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap group ${
                   isActive
-                    ? 'bg-slate-900 text-white font-extrabold shadow-2xs'
+                    ? 'bg-indigo-600 text-white font-extrabold shadow-sm shadow-indigo-200/60'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-200' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
-                {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                {item.shortcut && (
+                  <span className={`text-[9px] font-mono px-1 py-0.2 rounded transition-opacity ${
+                    isActive ? 'bg-indigo-700/80 text-indigo-100 font-bold' : 'bg-slate-200/70 text-slate-500 opacity-60 group-hover:opacity-100'
+                  }`}>
+                    {item.shortcut}
+                  </span>
                 )}
               </button>
             );
@@ -344,14 +435,18 @@ export default function Header() {
           {/* 'More Views' Dropdown Menu */}
           <div className="relative" ref={moreViewsRef}>
             <button
+              id="nav-more-views"
               onClick={() => setIsMoreViewsOpen(!isMoreViewsOpen)}
-              className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all whitespace-nowrap ${
                 isSecondaryActive 
-                  ? 'bg-slate-900 text-white font-extrabold shadow-2xs' 
+                  ? 'bg-indigo-600 text-white font-extrabold shadow-sm shadow-indigo-200/60' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'
               }`}
             >
               <span>More Views</span>
+              {dependencyConflicts.length > 0 && (
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+              )}
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMoreViewsOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -364,6 +459,7 @@ export default function Header() {
                   return (
                     <button
                       key={item.id}
+                      id={item.targetId || `nav-${item.id}`}
                       onClick={() => {
                         setActiveView(item.id);
                         setIsMoreViewsOpen(false);
@@ -376,6 +472,11 @@ export default function Header() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="truncate">{item.label}</span>
+                          {item.id === 'dependencies' && dependencyConflicts.length > 0 && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded bg-amber-100 text-amber-800 border border-amber-300">
+                              {dependencyConflicts.length} conflicts
+                            </span>
+                          )}
                           {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
                         </div>
                         <span className="text-[10px] text-slate-400 font-normal block truncate">{item.desc}</span>
@@ -391,7 +492,7 @@ export default function Header() {
 
         {/* INLINE COMPACT FILTER POPOVER TOGGLE */}
         <div className="relative" ref={filterRef}>
-          <button
+          <button aria-haspopup="true" aria-expanded={isFilterOpen} data-testid="filter-button"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
               activeFiltersCount > 0 

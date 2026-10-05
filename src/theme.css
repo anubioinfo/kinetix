@@ -1,0 +1,110 @@
+/* src/theme.css – Central colour palette and dark‑mode overrides */
+
+/* ─────────────────────────────────────────────────────────────────
+   BRAND COLOUR SCALE  (indigo → violet gradient family)
+   These match exactly what Tailwind indigo-* classes resolve to,
+   so .bg-primary / bg-indigo-600 are now identical.
+   ───────────────────────────────────────────────────────────────── */
+:root {
+  /* Primary brand — indigo-600 (matches the app's actual UI everywhere) */
+  --color-primary:        99 102 241;   /* indigo-600  */
+  --color-primary-light:  129 140 248;  /* indigo-400  */
+  --color-primary-dark:   79  70 229;   /* indigo-700  */
+  --color-primary-hover:  79  70 229;   /* indigo-700  */
+  --color-primary-text:   255 255 255;  /* white       */
+
+  /* Gradient endpoint — violet-700 (used in AI/IQ button "via" stop) */
+  --color-brand-via:      124 58 237;   /* violet-600  */
+  --color-brand-end:      109 40 217;   /* violet-700  */
+
+  /* Accent colours */
+  --color-accent-purple:  139 92  246;  /* violet-500  */
+  --color-accent-teal:    13 148 136;   /* teal-600    */
+  --color-accent-amber:   245 158  11;  /* amber-500   */
+  --color-accent-rose:    244 63  94;   /* rose-500    */
+
+  /* Neutral background tones */
+  --color-bg-primary:     248 250 252;  /* slate-50    */
+  --color-bg-card:        255 255 255;  /* white       */
+  --color-bg-card-alpha:  255 255 255 / 0.95;
+  --color-border:         226 232 240;  /* slate-200   */
+  --color-border-subtle:  241 245 249;  /* slate-100   */
+
+  /* Text */
+  --color-text-primary:   15  23  42;   /* slate-900   */
+  --color-text-secondary: 71  85 105;   /* slate-600   */
+  --color-text-muted:     148 163 184;  /* slate-400   */
+
+  /* Semantic status colours */
+  --color-success:        16 185 129;   /* emerald-500 */
+  --color-warning:        245 158  11;  /* amber-500   */
+  --color-danger:         239  68  68;  /* red-500     */
+  --color-info:           99 102 241;   /* indigo-600  */
+
+  /* Elevation / shadow tint */
+  --shadow-primary:       99 102 241;   /* indigo for coloured shadows */
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   DARK MODE — swap neutrals; keep brand hue, lighten it slightly
+   ───────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary:        129 140 248;  /* indigo-400 — lighter in dark */
+    --color-primary-dark:   99 102 241;   /* indigo-600                   */
+    --color-primary-hover:  165 180 252;  /* indigo-300                   */
+
+    --color-bg-primary:     15  23  42;   /* slate-900  */
+    --color-bg-card:        30  41  59;   /* slate-800  */
+    --color-bg-card-alpha:  30  41  59 / 0.95;
+    --color-border:         71  85 105;   /* slate-600  */
+    --color-border-subtle:  51  65  85;   /* slate-700  */
+
+    --color-text-primary:   226 232 240;  /* slate-200  */
+    --color-text-secondary: 148 163 184;  /* slate-400  */
+    --color-text-muted:     100 116 139;  /* slate-500  */
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   UTILITY CLASSES — wiring CSS variables → usable class names
+   ───────────────────────────────────────────────────────────────── */
+
+/* Backgrounds */
+.bg-brand          { background-color: rgb(var(--color-primary)); }
+.bg-brand-hover:hover { background-color: rgb(var(--color-primary-hover)); }
+.bg-brand-light    { background-color: rgb(var(--color-primary-light) / 0.12); }
+.bg-card           { background-color: rgb(var(--color-bg-card)); }
+.bg-surface        { background-color: rgb(var(--color-bg-primary)); }
+
+/* Text */
+.text-brand        { color: rgb(var(--color-primary)); }
+.text-on-brand     { color: rgb(var(--color-primary-text)); }
+.text-body         { color: rgb(var(--color-text-primary)); }
+.text-muted        { color: rgb(var(--color-text-muted)); }
+
+/* Borders */
+.border-brand      { border-color: rgb(var(--color-primary) / 0.4); }
+.border-subtle     { border-color: rgb(var(--color-border-subtle)); }
+.border-default    { border-color: rgb(var(--color-border)); }
+
+/* Ring / focus ring */
+.ring-brand        { --tw-ring-color: rgb(var(--color-primary) / 0.4); }
+
+/* Coloured drop-shadow */
+.shadow-brand {
+  box-shadow: 0 4px 20px -4px rgb(var(--shadow-primary) / 0.35);
+}
+.shadow-brand-lg {
+  box-shadow: 0 8px 32px -6px rgb(var(--shadow-primary) / 0.45);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL FOCUS-VISIBLE — consistent keyboard navigation ring
+   ───────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+

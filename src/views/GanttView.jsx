@@ -434,7 +434,24 @@ export default function GanttView() {
                   className="animate-pulse"
                 />
               )}
-            </svg>
+            {/* Today Vertical Line */}
+            {(() => {
+              const todayStr = new Date().toISOString().slice(0, 10);
+              const todayOffset = Math.max(0, getDaysDifference(minDate, todayStr));
+              const todayX = todayOffset * dayWidth;
+              const chartHeight = filteredMilestones.length * rowHeight + headerHeight;
+              if (todayOffset <= 0 || todayOffset >= totalDays) return null;
+              return (
+                <div
+                  className="absolute top-0 z-20 pointer-events-none"
+                  style={{ left: `${todayX}px`, height: `${chartHeight}px`, width: '2px' }}
+                >
+                  <div className="w-full h-full bg-rose-500/70" style={{ backgroundImage: 'repeating-linear-gradient(to bottom, #f43f5e 0px, #f43f5e 6px, transparent 6px, transparent 10px)' }} />
+                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded whitespace-nowrap shadow-sm">Today</div>
+                </div>
+              );
+            })()}
+</svg>
 
             {/* Timeline Rows with Horizontally Draggable Bars */}
             <div className="relative">
@@ -475,7 +492,7 @@ export default function GanttView() {
                         left: `${pos.left}px`,
                         width: `${Math.max(48, pos.width)}px`
                       }}
-                      className={`absolute h-9 rounded-lg border flex items-center px-3 cursor-grab active:cursor-grabbing shadow-xs transition-shadow duration-150 z-10 group/bar ${
+                      className={`absolute h-9 rounded-lg border flex items-center px-3 cursor-grab active:cursor-grabbing shadow-xs transition-all duration-150 z-10 group/bar hover:shadow-md hover:-translate-y-px ${
                         isDraggingThis
                           ? 'ring-4 ring-indigo-500/50 scale-105 z-30 shadow-lg'
                           : isConflict
@@ -489,7 +506,7 @@ export default function GanttView() {
                     >
                       {/* Progress Overlay Fill */}
                       <div
-                        className="absolute inset-y-0 left-0 bg-indigo-500/15 rounded-l-lg pointer-events-none"
+                        className="absolute inset-y-0 left-0 bg-indigo-500/15 rounded-l-lg pointer-events-none transition-all"
                         style={{ width: `${ms.progress}%` }}
                       />
 

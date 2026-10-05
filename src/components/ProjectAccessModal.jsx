@@ -77,7 +77,7 @@ export default function ProjectAccessModal({ isOpen, onClose, project }) {
             </div>
             <div>
               <h2 className="text-base font-extrabold flex items-center gap-2">
-                <span>Manage Project Access & Permissions</span>
+                <span>Manage Workspace Access & Permissions</span>
                 <span className="text-[10px] font-mono bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-400/30 uppercase">
                   {project.code}
                 </span>

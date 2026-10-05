@@ -74,8 +74,8 @@ export default function CreateProjectModal({ isOpen, onClose }) {
               <FolderPlus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-slate-900 text-base">Create New Project</h3>
-              <p className="text-slate-500 text-xs">Start a blank project from scratch or load an agile template</p>
+              <h3 className="font-extrabold text-slate-900 text-base">Create New Workspace</h3>
+              <p className="text-slate-500 text-xs">Start a blank workspace from scratch or load an agile template</p>
             </div>
           </div>
           <button 
@@ -102,7 +102,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
             >
               <span className="font-extrabold text-slate-900 block text-xs flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Blank Project (Scratch)</span>
+                <span>Blank Workspace (Scratch)</span>
               </span>
               <span className="text-[11px] text-slate-500 block leading-tight">Start with zero milestones, clean roadmap, & custom goals.</span>
             </button>
@@ -125,12 +125,12 @@ export default function CreateProjectModal({ isOpen, onClose }) {
           </div>
 
           <div>
-            <label className="block text-slate-700 font-bold mb-1">Project Name *</label>
+            <label className="block text-slate-700 font-bold mb-1">Workspace Name *</label>
             <input 
               type="text" 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Project Nova / Mobile App Redesign"
+              placeholder="e.g. Workspace Nova / Mobile App Redesign"
               required
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-bold text-xs focus:outline-hidden focus:border-indigo-600"
             />
@@ -138,7 +138,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-700 font-bold mb-1">Project Key / Code</label>
+              <label className="block text-slate-700 font-bold mb-1">Workspace Key / Code</label>
               <input 
                 type="text" 
                 value={code}
@@ -167,7 +167,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-700 font-bold mb-1">Project Owner</label>
+              <label className="block text-slate-700 font-bold mb-1">Workspace Owner</label>
               <select
                 value={owner}
                 onChange={(e) => setOwner(e.target.value)}
@@ -188,7 +188,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
           </div>
 
           <div>
-            <label className="block text-slate-700 font-bold mb-1">Project Description</label>
+            <label className="block text-slate-700 font-bold mb-1">Workspace Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -204,7 +204,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
             className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-40 text-white font-extrabold text-xs transition-all shadow-md flex items-center justify-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
-            <span>Create {projectMode === 'blank' ? 'Blank Project from Scratch' : 'Template Project'}</span>
+            <span>Create {projectMode === 'blank' ? 'Blank Workspace from Scratch' : 'Template Workspace'}</span>
           </button>
         </form>
 
